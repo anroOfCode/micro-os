@@ -1,6 +1,3 @@
-#-*-Makefile-*-
-#$Id: epic.target,v 1.5 2010-02-26 23:36:34 sdhsdh Exp $
-
 PLATFORM ?= epic
 
 OPTFLAGS ?= -Os

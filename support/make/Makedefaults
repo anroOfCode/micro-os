@@ -1,4 +1,4 @@
 DEFAULT_LOCAL_GROUP ?= 0x22
 OPTFLAGS ?= -Os
 NESC_FLAGS ?= -Wnesc-all
-GOALS += ident_flags tos_image tosboot
+GOALS += tos_image

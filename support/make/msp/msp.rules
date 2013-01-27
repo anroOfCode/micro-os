@@ -56,7 +56,7 @@ MAIN_IHEX = $(BUILDDIR)/main.ihex
 INSTALL_IHEX = $(MAIN_IHEX).out$(if $(NODEID),-$(NODEID),)
 
 PFLAGS += -Wall -Wshadow $(NESC_FLAGS)
-PFLAGS += -target=$(PLATFORM) -fnesc-cfile=$(BUILDDIR)/app.c -board=$(SENSORBOARD)
+PFLAGS += -target=$(PLATFORM) -fnesc-cfile=$(BUILDDIR)/app.c
 ifdef MSG_SIZE
 PFLAGS += -DTOSH_DATA_LENGTH=$(MSG_SIZE)
 endif

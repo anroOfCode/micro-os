@@ -5,15 +5,10 @@
 ### ---
 
 #  Deduce TINYOS_MAKE_PATH
-ifndef TINYOS_MAKE_PATH
-  ifdef MAKERULES
-    TINYOS_MAKE_PATH := $(dir $(MAKERULES))
-    TINYOS_MAKE_PATH := $(TINYOS_MAKE_PATH:%/=%)
-    $(info TINYOS_MAKE_PATH = $(TINYOS_MAKE_PATH))
-  endif
-endif
 
-
+TINYOS_MAKE_PATH := $(dir $(MAKERULES))
+TINYOS_MAKE_PATH := $(TINYOS_MAKE_PATH:%/=%)
+$(info TINYOS_MAKE_PATH = $(TINYOS_MAKE_PATH))
 TINYOS_MAKEDEFAULTS ?= $(TINYOS_MAKE_PATH)/Makedefaults
 
 #  Save makecmdgoals (a read only var) to goals so that we can modify it.
