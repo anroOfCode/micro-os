@@ -48,15 +48,15 @@
   */ 
 
 interface Boot {
-  /**
-   * Signaled when the system has booted successfully. Components can
-   * assume the system has been initialized properly. Services may
-   * need to be started to work, however.
-   *
-   * @see StdControl
-   * @see SplitConrol
-   * @see TEP 107: Boot Sequence
-   */
-  event void booted();
+    /**
+     * Signaled when the system has booted successfully. Components can
+     * assume the system has been initialized properly. Services may
+     * need to be started to work, however.
+     *
+     * @see StdControl
+     * @see SplitConrol
+     * @see TEP 107: Boot Sequence
+     */
+    event void booted();
 }
 

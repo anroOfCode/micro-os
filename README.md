@@ -78,3 +78,18 @@ It should serve as a stepping stone for research and products that are not
 rooted in designing a wireless sensor network, but assume it's existence and
 instead focus on the specifics of applications running atop them.
 
+A Note On Code Style
+--------------------
+This project will follow K&R style. We will be using four-space tabs on all new code.
+
+Old TinyOS code uses two spaces. I don't like this and will reindent code as I see
+fit.
+
+Reasons Why This Needed To Happen
+---------------------------------
+  * TinyOS's printf library requires a long, complicated wiki page with flow charts
+and diagrams to use and some awful Java ActiveMessage demuxing program and is an
+absolute headache to understand.
+  * The implementation of the ds2411 required 11 separate files, 2 of which were
+just dead code laying around to confuse.
+

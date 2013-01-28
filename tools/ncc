@@ -235,6 +235,10 @@ if (!$nostdinc) {
     push @includes, "%T/system/net";
     push @includes, "%T/system/rfxlink";
     push @includes, "%T/system/timer";
+    push @includes, "%T/system/printf";
+    push @includes, "%T/system/euid";
+    push @includes, "%T/system/resource";
+    push @includes, "%T/system/power";
 }
 
 foreach $idir (@includes) {

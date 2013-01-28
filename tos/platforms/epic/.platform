@@ -13,6 +13,7 @@ push( @includes, qw(
   %T/chips/msp430/pins
   %T/chips/msp430/timer
   %T/chips/msp430/clock_bcs
+  %T/chips/msp430/usart
 ) );
 
 # The @opts list contains parameters that are passed to ncc.
