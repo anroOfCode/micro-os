@@ -1,107 +1,116 @@
-/*
- * Copyright (c) 2011 Eric B. Decker
- * Copyright (c) 2000-2003 The Regents of the University of California.
+
+/* "Copyright (c) 2000-2003 The Regents of the University of California.
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose, without fee, and without written agreement
+ * is hereby granted, provided that the above copyright notice, the following
+ * two paragraphs and the author appear in all copies of this software.
  *
- * - Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
+ * IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+ * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY
+ * OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * - Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in the
- *   documentation and/or other materials provided with the
- *   distribution.
- *
- * - Neither the name of the copyright holders nor the names of
- *   its contributors may be used to endorse or promote products derived
- *   from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
- * THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS."
  */
 
+/*
+ * Copyright (c) 2011, Vanderbilt University
+ * All rights reserved.
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose, without fee, and without written agreement is
+ * hereby granted, provided that the above copyright notice, the following
+ * two paragraphs and the author appear in all copies of this software.
+ * 
+ * IN NO EVENT SHALL THE VANDERBILT UNIVERSITY BE LIABLE TO ANY PARTY FOR
+ * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
+ * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE VANDERBILT
+ * UNIVERSITY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * THE VANDERBILT UNIVERSITY SPECIFICALLY DISCLAIMS ANY WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
+ * ON AN "AS IS" BASIS, AND THE VANDERBILT UNIVERSITY HAS NO OBLIGATION TO
+ * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+ *
+ * Author: Janos Sallai
+ */ 
+ 
+ /**
+ Configure the timer subsystem such that TimerA=ACLK (32kHz) and 
+ TimerB=SMCLK/4 (1MHz).
+ */
+  
 /**
  * @author Cory Sharp <cssharp@eecs.berkeley.edu>
- * @author Eric B. Decker <cire831@gmail.com>
  */
 
-#if !defined(__MSP430_HAS_TA3__)
-#error "x1x2/timer/Msp430TimerC: need TA3."
-#endif
-#if !defined(__MSP430_HAS_TB3__) && !defined(__MSP430_HAS_TB7__)
-#error "x1x2/timer/Msp430TimerC: need either TB3 or TB7."
-#endif
-
-configuration Msp430TimerC {
+configuration Msp430TimerC
+{
   provides interface Msp430Timer as TimerA;
   provides interface Msp430TimerControl as ControlA0;
-  provides interface Msp430Compare      as CompareA0;
-  provides interface Msp430Capture      as CaptureA0;
   provides interface Msp430TimerControl as ControlA1;
-  provides interface Msp430Compare      as CompareA1;
-  provides interface Msp430Capture      as CaptureA1;
   provides interface Msp430TimerControl as ControlA2;
-  provides interface Msp430Compare      as CompareA2;
-  provides interface Msp430Capture      as CaptureA2;
+  provides interface Msp430Compare as CompareA0;
+  provides interface Msp430Compare as CompareA1;
+  provides interface Msp430Compare as CompareA2;
+  provides interface Msp430Capture as CaptureA0;
+  provides interface Msp430Capture as CaptureA1;
+  provides interface Msp430Capture as CaptureA2;
 
   provides interface Msp430Timer as TimerB;
   provides interface Msp430TimerControl as ControlB0;
-  provides interface Msp430Compare      as CompareB0;
-  provides interface Msp430Capture      as CaptureB0;
   provides interface Msp430TimerControl as ControlB1;
-  provides interface Msp430Compare      as CompareB1;
-  provides interface Msp430Capture      as CaptureB1;
   provides interface Msp430TimerControl as ControlB2;
-  provides interface Msp430Compare      as CompareB2;
-  provides interface Msp430Capture      as CaptureB2;
-#if defined(__MSP430_HAS_TB7__)
   provides interface Msp430TimerControl as ControlB3;
-  provides interface Msp430Compare      as CompareB3;
-  provides interface Msp430Capture      as CaptureB3;
   provides interface Msp430TimerControl as ControlB4;
-  provides interface Msp430Compare      as CompareB4;
-  provides interface Msp430Capture      as CaptureB4;
   provides interface Msp430TimerControl as ControlB5;
-  provides interface Msp430Compare      as CompareB5;
-  provides interface Msp430Capture      as CaptureB5;
   provides interface Msp430TimerControl as ControlB6;
-  provides interface Msp430Compare      as CompareB6;
-  provides interface Msp430Capture      as CaptureB6;
-#endif /* __MSP430_HAS_TB7__ */
+  provides interface Msp430Compare as CompareB0;
+  provides interface Msp430Compare as CompareB1;
+  provides interface Msp430Compare as CompareB2;
+  provides interface Msp430Compare as CompareB3;
+  provides interface Msp430Compare as CompareB4;
+  provides interface Msp430Compare as CompareB5;
+  provides interface Msp430Compare as CompareB6;
+  provides interface Msp430Capture as CaptureB0;
+  provides interface Msp430Capture as CaptureB1;
+  provides interface Msp430Capture as CaptureB2;
+  provides interface Msp430Capture as CaptureB3;
+  provides interface Msp430Capture as CaptureB4;
+  provides interface Msp430Capture as CaptureB5;
+  provides interface Msp430Capture as CaptureB6;
 }
-implementation {
+implementation
+{
   components new Msp430TimerP( TAIV_, TAR_, TACTL_, TAIFG, TACLR, TAIE,
-               TASSEL0, TASSEL1, FALSE ) as Msp430TimerA
+               TASSEL0, TASSEL1, TRUE ) as Msp430TimerA
            , new Msp430TimerP( TBIV_, TBR_, TBCTL_, TBIFG, TBCLR, TBIE,
-               TBSSEL0, TBSSEL1, TRUE ) as Msp430TimerB
+               TBSSEL0, TBSSEL1, FALSE ) as Msp430TimerB
            , new Msp430TimerCapComP( TACCTL0_, TACCR0_ ) as Msp430TimerA0
            , new Msp430TimerCapComP( TACCTL1_, TACCR1_ ) as Msp430TimerA1
            , new Msp430TimerCapComP( TACCTL2_, TACCR2_ ) as Msp430TimerA2
            , new Msp430TimerCapComP( TBCCTL0_, TBCCR0_ ) as Msp430TimerB0
            , new Msp430TimerCapComP( TBCCTL1_, TBCCR1_ ) as Msp430TimerB1
            , new Msp430TimerCapComP( TBCCTL2_, TBCCR2_ ) as Msp430TimerB2
-#if defined(__MSP430_HAS_TB7__)
            , new Msp430TimerCapComP( TBCCTL3_, TBCCR3_ ) as Msp430TimerB3
            , new Msp430TimerCapComP( TBCCTL4_, TBCCR4_ ) as Msp430TimerB4
            , new Msp430TimerCapComP( TBCCTL5_, TBCCR5_ ) as Msp430TimerB5
            , new Msp430TimerCapComP( TBCCTL6_, TBCCR6_ ) as Msp430TimerB6
-#endif /* __MSP430_HAS_TB7__ */
            , Msp430TimerCommonP as Common
+  	   // online DCO calibration
+//  	   , Msp430DcoCalibC, new AutoStartC();
            ;
 
+  // online DCO calibration
+//  Msp430DcoCalibC.StdControl <- AutoStartC;
+  
   // Timer A
   TimerA = Msp430TimerA.Timer;
   Msp430TimerA.Overflow -> Msp430TimerA.Event[5];
@@ -156,7 +165,6 @@ implementation {
   Msp430TimerB2.Timer -> Msp430TimerB.Timer;
   Msp430TimerB2.Event -> Msp430TimerB.Event[2];
 
-#if defined(__MSP430_HAS_TB7__)
   // Timer B3
   ControlB3 = Msp430TimerB3.Control;
   CompareB3 = Msp430TimerB3.Compare;
@@ -184,5 +192,5 @@ implementation {
   CaptureB6 = Msp430TimerB6.Capture;
   Msp430TimerB6.Timer -> Msp430TimerB.Timer;
   Msp430TimerB6.Event -> Msp430TimerB.Event[6];
-#endif /* __MSP430_HAS_TB7__ */
 }
+

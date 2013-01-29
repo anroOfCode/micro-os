@@ -1,7 +1,5 @@
 /*
- * Copyright (c) 2011 Eric B. Decker
- * Copyright (c) 2005 Stanford University.
- * All rights reserved.
+ * Copyright (c) 2005 Stanford University. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -9,13 +7,11 @@
  *
  * - Redistributions of source code must retain the above copyright
  *   notice, this list of conditions and the following disclaimer.
- *
  * - Redistributions in binary form must reproduce the above copyright
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- *
- * - Neither the name of the copyright holders nor the names of
+ * - Neither the name of the copyright holder nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -31,6 +27,7 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
  */
 
 /**
@@ -43,7 +40,15 @@
  * @author Vlado Handziski
  * @author Joe Polastre
  * @author Cory Sharp
- * @author Eric B. Decker <cire831@gmail.com>
+ * @author Janos Sallai
+ * @date   October 26, 2005
+ * @see  Please refer to TEP 112 for more information about this component and its
+ *          intended use.
+ *
+ */
+
+/**
+ We need prevent the MCU from sleeping when the microsecond alarm is set.
  */
 
 module McuSleepC @safe() {
@@ -56,11 +61,6 @@ module McuSleepC @safe() {
   }
 }
 implementation {
-
-MSP430REG_NORACE2(U0CTLnr,U0CTL);
-MSP430REG_NORACE2(I2CTCTLnr,I2CTCTL);
-MSP430REG_NORACE2(I2CDCTLnr,I2CDCTL);
-
   bool dirty = TRUE;
   mcu_power_t powerState = MSP430_POWER_ACTIVE;
 
@@ -79,23 +79,21 @@ MSP430REG_NORACE2(I2CDCTLnr,I2CDCTL);
   mcu_power_t getPowerState() {
     mcu_power_t pState = MSP430_POWER_LPM4;
     // TimerA, USART0, USART1 check
-    if ((((TACCTL0 & CCIE) ||
-	  (TACCTL1 & CCIE) ||
-	  (TACCTL2 & CCIE)) &&
-	 ((TACTL & TASSEL_3) == TASSEL_2)) ||
+    if ((((TBCCTL0 & CCIE) ||
+	  (TBCCTL1 & CCIE) ||
+	  (TBCCTL2 & CCIE)) &&
+	 ((TBCTL & TASSEL_3) == TASSEL_2)) ||
 	((ME1 & (UTXE0 | URXE0)) && (U0TCTL & SSEL1)) ||
 	((ME2 & (UTXE1 | URXE1)) && (U1TCTL & SSEL1))
-
-/* the following is only for x1 chips. */
-#if defined(__msp430_have_usart0_with_i2c) || defined(__MSP430_HAS_I2C__)
+#ifdef __msp430_have_usart0_with_i2c
 	 // registers end in "nr" to prevent nesC race condition detection
-	 || ((U0CTLnr & I2CEN) && (I2CTCTLnr & SSEL1) &&
-	     (I2CDCTLnr & I2CBUSY) && (U0CTLnr & SYNC) && (U0CTLnr & I2C))
+	 || ((U0CTL & I2CEN) && (I2CTCTL & SSEL1) &&
+	     (I2CDCTL & I2CBUSY) && (U0CTL & SYNC) && (U0CTL & I2C))
 #endif
 	)
       pState = MSP430_POWER_LPM1;
-
-#if defined(__msp430_have_adc12) || defined(__MSP430_HAS_ADC12__)
+    
+#ifdef __msp430_have_adc12
     // ADC12 check, pre-condition: pState != MSP430_POWER_ACTIVE
     if (ADC12CTL0 & ADC12ON){
       if (ADC12CTL1 & ADC12SSEL_2){
@@ -108,7 +106,7 @@ MSP430REG_NORACE2(I2CDCTLnr,I2CDCTL);
         // Timer A is used as sample-and-hold source and SMCLK sources Timer A
         // (Timer A interrupts are always disabled when it is used by the 
         // ADC subsystem, that's why the Timer check above is not enough)
-        pState = MSP430_POWER_LPM1;
+	      pState = MSP430_POWER_LPM1;
       }
     }
 #endif
@@ -118,7 +116,7 @@ MSP430REG_NORACE2(I2CDCTLnr,I2CDCTL);
   
   void computePowerState() {
     powerState = mcombine(getPowerState(),
-        call McuPowerOverride.lowestState());
+			  call McuPowerOverride.lowestState());
   }
   
   async command void McuSleep.sleep() {
@@ -138,7 +136,8 @@ MSP430REG_NORACE2(I2CDCTLnr,I2CDCTL);
     atomic dirty = 1;
   }
 
-  default async command mcu_power_t McuPowerOverride.lowestState() {
-    return MSP430_POWER_LPM4;
-  }
+ default async command mcu_power_t McuPowerOverride.lowestState() {
+   return MSP430_POWER_LPM4;
+ }
+
 }

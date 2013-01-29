@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2011, Vanderbilt University
+ /*
+ * Copyright (c) 2010, Vanderbilt University
  * All rights reserved.
  *
  * Permission to use, copy, modify, and distribute this software and its
@@ -19,33 +19,42 @@
  * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
  *
  * Author: Janos Sallai
- */ 
- 
- /**
- Configure the timer subsystem such that TimerA=ACLK (32kHz) and 
- TimerB=SMCLK/4 (1MHz).
  */
-  
-configuration Msp430Timer32khzMapC
+
+#ifndef __CC2420XRADIO_H__
+#define __CC2420XRADIO_H__
+
+#include <RadioConfig.h>
+#include <Ieee154PacketLayer.h>
+#include <MetadataFlagsLayer.h>
+#include <CC2420XDriverLayer.h>
+#include <TimeStampingLayer.h>
+#include <LowPowerListeningLayer.h>
+#include <PacketLinkLayer.h>
+
+typedef nx_struct cc2420xpacket_header_t
 {
-  provides interface Msp430Timer[ uint8_t id ];
-  provides interface Msp430TimerControl[ uint8_t id ];
-  provides interface Msp430Compare[ uint8_t id ];
-}
-implementation
+	cc2420x_header_t cc2420x;
+	ieee154_simple_header_t ieee154;
+	network_header_t network;
+} cc2420xpacket_header_t;
+
+typedef nx_struct cc2420xpacket_footer_t
 {
-  components Msp430TimerC;
+	// the time stamp is not recorded here, time stamped messaged cannot have max length
+} cc2420xpacket_footer_t;
 
-  Msp430Timer[0] = Msp430TimerC.TimerA;
-  Msp430TimerControl[0] = Msp430TimerC.ControlA0;
-  Msp430Compare[0] = Msp430TimerC.CompareA0;
+typedef struct cc2420xpacket_metadata_t
+{
+#ifdef LOW_POWER_LISTENING
+	lpl_metadata_t lpl;
+#endif
+#ifdef PACKET_LINK
+	link_metadata_t link;
+#endif
+	timestamp_metadata_t timestamp;
+	flags_metadata_t flags;
+	cc2420x_metadata_t cc2420x;
+} cc2420xpacket_metadata_t;
 
-  Msp430Timer[1] = Msp430TimerC.TimerA;
-  Msp430TimerControl[1] = Msp430TimerC.ControlA1;
-  Msp430Compare[1] = Msp430TimerC.CompareA1;
-
-  Msp430Timer[2] = Msp430TimerC.TimerA;
-  Msp430TimerControl[2] = Msp430TimerC.ControlA2;
-  Msp430Compare[2] = Msp430TimerC.CompareA2;
-}
-
+#endif//__CC2420XRADIO_H__
