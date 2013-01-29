@@ -50,6 +50,37 @@ radio functionality.
 this implemented, it has a pretty interesting build process. Add
 support for it.
 
+Folder Layout
+-------------
+We've diverged a little bit from the TinyOS folder layout. I tried to fix
+a few of the oddities and inconsistencies.
+
+  * tos\system - Main directory for all non-chip specific files. This includes
+all of the glue code, the main scheduler, and other core system components. Each
+core system module (defined as a set of TinyOS components and interfaces) is placed 
+in its own separate folder within this directory. 
+  * tos\interfaces - Any interfaces that are used across multiple modules, or are
+designed for general purpose use are placed here.
+  * tos\include - All header files are to be placed here. 
+  * tos\platforms - Each platform has a separate directory that contains platform-specific
+components. This can include wiring of chips to certain IO pins, definition of hardware
+modules to include, and initialization code. 
+  * tos\chips - Every chip (both peripheral and microcontroller) should have a directory
+here that contains the code necessary to interface successfully with it and any interfaces
+it exports. In theory chips should have hardware presentation layers and hardware abstraction
+layers defined, but as long as things are reasonable modular you're doing just fine. 
+  * tools - Includes the tos-bsl tool for programming motes, and a
+modified version of ncc, the TinyOS wrapper around the nesC compiler. TinyOS specific
+tools should be placed here. 
+  * support\make - The make system resides here, including .target files that help
+TinyOS determine which tool chain and platform directory to inspect to compile for
+a specific platform, as well as how to build and install the resultant binaries.
+
+**Some Divergences from TinyOS**
+
+The big change I'm making in the folder layout are the elimination of the lib directory,
+and the breaking up of the system directory into subfolders.
+
 What I Hope To Build
 --------------------
 
