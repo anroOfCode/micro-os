@@ -19,7 +19,7 @@ configuration HplCC2420XC {
 }
 implementation {
 
-    components HplMsp430GeneralIOC as IO, new Msp430Spi1C() as SpiC;
+    components HplMsp430GeneralIOC as IO, new Msp430Spi0C() as SpiC;
 
     // pins
     components new Msp430GpioC() as CCAM;

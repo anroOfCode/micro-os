@@ -394,7 +394,6 @@ implementation
     void initRadio()
     {
         resetRadio();       
-        
         txPower = CC2420X_DEF_RFPOWER & CC2420X_TX_PWR_MASK;
         channel = CC2420X_DEF_CHANNEL & CC2420X_CHANNEL_MASK;       
 
@@ -611,6 +610,8 @@ implementation
         uint8_t length;
         uint8_t* data;
         uint8_t header;
+
+                call Leds.led2Toggle();
 
         if( cmd != CMD_NONE || (state != STATE_IDLE && state != STATE_RX_ON) || ! isSpiAcquired() || radioIrq )
             return EBUSY;
