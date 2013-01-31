@@ -36,7 +36,6 @@ configuration CC2420XDriverLayerC
 
 		interface PacketField<uint8_t> as PacketTransmitPower;
 		interface PacketField<uint8_t> as PacketRSSI;
-		interface PacketField<uint8_t> as PacketTimeSyncOffset;
 		interface PacketField<uint8_t> as PacketLinkQuality;
 		interface LinkPacketMetadata;
 
@@ -47,11 +46,9 @@ configuration CC2420XDriverLayerC
 	uses
 	{
 		interface CC2420XDriverConfig as Config;
-		interface PacketTimeStamp<TRadio, uint32_t>;
 
 		interface PacketFlag as TransmitPowerFlag;
 		interface PacketFlag as RSSIFlag;
-		interface PacketFlag as TimeSyncFlag;
 		interface RadioAlarm;
 	}
 }
@@ -90,11 +87,7 @@ implementation
 	PacketRSSI = DriverLayerP.PacketRSSI;
 	RSSIFlag = DriverLayerP.RSSIFlag;
 
-	PacketTimeSyncOffset = DriverLayerP.PacketTimeSyncOffset;
-	TimeSyncFlag = DriverLayerP.TimeSyncFlag;
-
 	PacketLinkQuality = DriverLayerP.PacketLinkQuality;
-	PacketTimeStamp = DriverLayerP.PacketTimeStamp;
 	LinkPacketMetadata = DriverLayerP;
 
 	Alarm = HplC.Alarm;

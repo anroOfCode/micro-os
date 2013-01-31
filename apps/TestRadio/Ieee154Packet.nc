@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2007, Vanderbilt University
- * All rights reserved.
+ * Copyright (c) 2008 The Regents of the University  of California.
+ * All rights reserved."
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -12,7 +12,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- * - Neither the name of the copyright holder nor the names of
+ * - Neither the name of the copyright holders nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -29,58 +29,26 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Author: Miklos Maroti
  */
+#include <Ieee154.h>
 
-#include <RadioConfig.h>
+interface Ieee154Packet {
 
-configuration CC2420XIeee154MessageC
-{
-	provides 
-	{
-		interface SplitControl;
+  command ieee154_saddr_t address();
+ 
+  command ieee154_saddr_t destination(message_t* msg);
+ 
+  command ieee154_saddr_t source(message_t* msg);
 
-		interface Ieee154Send;
-		interface Receive as Ieee154Receive;
+  command void setDestination(message_t* msg, ieee154_saddr_t addr);
 
-		interface Ieee154Packet;
-		interface Packet;
+  command void setSource(message_t* msg, ieee154_saddr_t addr);
 
-		interface PacketAcknowledgements;
-		interface LowPowerListening;
-		interface PacketLink;
+  command bool isForMe(message_t* msg);
 
-		interface RadioChannel;
+  command ieee154_panid_t pan(message_t* msg);
 
-		interface PacketField<uint8_t> as PacketLinkQuality;
-		interface PacketField<uint8_t> as PacketTransmitPower;
-		interface PacketField<uint8_t> as PacketRSSI;
+  command void setPan(message_t* msg, ieee154_panid_t grp);
 
-		interface LocalTime<TRadio> as LocalTimeRadio;
-	}
-}
-
-implementation
-{
-	components CC2420XRadioC;
-
-	SplitControl = CC2420XRadioC.SplitControl;
-
-	Ieee154Send = CC2420XRadioC.Ieee154Send;
-	Ieee154Receive = CC2420XRadioC.Ieee154Receive;
-
-	Packet = CC2420XRadioC.PacketForIeee154Message;
-	Ieee154Packet = CC2420XRadioC;
-
-	PacketAcknowledgements = CC2420XRadioC;
-	LowPowerListening = CC2420XRadioC;
-	PacketLink = CC2420XRadioC;
-
-	RadioChannel = CC2420XRadioC;
-
-	PacketLinkQuality = CC2420XRadioC.PacketLinkQuality;
-	PacketTransmitPower = CC2420XRadioC.PacketTransmitPower;
-	PacketRSSI = CC2420XRadioC.PacketRSSI;
-
-	LocalTimeRadio = CC2420XRadioC;
+  command ieee154_panid_t localPan();
 }

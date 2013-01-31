@@ -39,7 +39,6 @@ generic module Ieee154MessageLayerC()
 		interface Packet;
 		interface Ieee154Send;
 		interface Receive as Ieee154Receive;
-		interface SendNotifier;
 	}
 
 	uses
@@ -118,8 +117,6 @@ implementation
 	    	call Ieee154PacketLayer.setSrcAddr(msg, call Ieee154PacketLayer.localAddr());
 		call Ieee154PacketLayer.setDestAddr(msg, addr);
 	    	call Ieee154PacketLayer.setDestPan(msg, call Ieee154PacketLayer.localPan());
-		
-    		signal SendNotifier.aboutToSend(addr, msg);
     	
     		return call SubSend.send(msg);
 	}
@@ -130,10 +127,6 @@ implementation
 	}
 
 	default event void Ieee154Send.sendDone(message_t* msg, error_t error)
-	{
-	}
-
-	default event void SendNotifier.aboutToSend(am_addr_t addr, message_t* msg)
 	{
 	}
 

@@ -28,7 +28,6 @@
 #include <Ieee154PacketLayer.h>
 #include <MetadataFlagsLayer.h>
 #include <CC2420XDriverLayer.h>
-#include <TimeStampingLayer.h>
 #include <LowPowerListeningLayer.h>
 #include <PacketLinkLayer.h>
 
@@ -36,12 +35,10 @@ typedef nx_struct cc2420xpacket_header_t
 {
 	cc2420x_header_t cc2420x;
 	ieee154_simple_header_t ieee154;
-	network_header_t network;
 } cc2420xpacket_header_t;
 
 typedef nx_struct cc2420xpacket_footer_t
 {
-	// the time stamp is not recorded here, time stamped messaged cannot have max length
 } cc2420xpacket_footer_t;
 
 typedef struct cc2420xpacket_metadata_t
@@ -52,7 +49,6 @@ typedef struct cc2420xpacket_metadata_t
 #ifdef PACKET_LINK
 	link_metadata_t link;
 #endif
-	timestamp_metadata_t timestamp;
 	flags_metadata_t flags;
 	cc2420x_metadata_t cc2420x;
 } cc2420xpacket_metadata_t;

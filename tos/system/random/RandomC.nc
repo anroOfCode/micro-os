@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007, Vanderbilt University
+ * Copyright (c) 2002-2005 The Regents of the University  of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +12,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- * - Neither the name of the copyright holder nor the names of
+ * - Neither the name of the University of California nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -28,59 +28,31 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Author: Miklos Maroti
  */
 
-#include <RadioConfig.h>
+/**
+ * The standard TinyOS random number generator. If your system requires a 
+ * specific random number generator, it should wire to that component
+ * directly. 
+ *
+ * @author  Barbara Hohlt 
+ * @author  Phil Levis 
+ * @date    March 1 2005
+ */
 
-configuration CC2420XIeee154MessageC
-{
-	provides 
-	{
-		interface SplitControl;
-
-		interface Ieee154Send;
-		interface Receive as Ieee154Receive;
-
-		interface Ieee154Packet;
-		interface Packet;
-
-		interface PacketAcknowledgements;
-		interface LowPowerListening;
-		interface PacketLink;
-
-		interface RadioChannel;
-
-		interface PacketField<uint8_t> as PacketLinkQuality;
-		interface PacketField<uint8_t> as PacketTransmitPower;
-		interface PacketField<uint8_t> as PacketRSSI;
-
-		interface LocalTime<TRadio> as LocalTimeRadio;
-	}
+configuration RandomC {
+  provides interface Init;
+  provides interface ParameterInit<uint16_t> as SeedInit;
+  provides interface Random;
 }
 
-implementation
-{
-	components CC2420XRadioC;
+implementation {
+  components RandomMlcgC, MainC;
+  
+  MainC.SoftwareInit -> RandomMlcgC;
 
-	SplitControl = CC2420XRadioC.SplitControl;
+  Init = RandomMlcgC;
+  SeedInit = RandomMlcgC;
+  Random = RandomMlcgC;
 
-	Ieee154Send = CC2420XRadioC.Ieee154Send;
-	Ieee154Receive = CC2420XRadioC.Ieee154Receive;
-
-	Packet = CC2420XRadioC.PacketForIeee154Message;
-	Ieee154Packet = CC2420XRadioC;
-
-	PacketAcknowledgements = CC2420XRadioC;
-	LowPowerListening = CC2420XRadioC;
-	PacketLink = CC2420XRadioC;
-
-	RadioChannel = CC2420XRadioC;
-
-	PacketLinkQuality = CC2420XRadioC.PacketLinkQuality;
-	PacketTransmitPower = CC2420XRadioC.PacketTransmitPower;
-	PacketRSSI = CC2420XRadioC.PacketRSSI;
-
-	LocalTimeRadio = CC2420XRadioC;
-}
+} 

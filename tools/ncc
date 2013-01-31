@@ -227,8 +227,8 @@ unshift @new_args, "$nescc";
 
 if (!$nostdinc) {
     push @includes, map "%T/$platform/$_", @commonplatforms;
-    push @includes, "%T/interfaces";
     push @includes, "%T/include";
+    push @includes, "%T/interfaces";
     push @includes, "%T/system";
     push @includes, "%T/system/core";
     push @includes, "%T/system/leds";
@@ -241,6 +241,7 @@ if (!$nostdinc) {
     push @includes, "%T/system/power";
     push @includes, "%T/system/rfxlink/layers";
     push @includes, "%T/system/rfxlink/util";
+    push @includes, "%T/system/random";
 }
 
 foreach $idir (@includes) {

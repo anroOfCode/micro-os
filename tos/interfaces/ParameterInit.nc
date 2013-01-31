@@ -1,5 +1,6 @@
+// $Id: ParameterInit.nc,v 1.6 2010-06-29 22:07:46 scipio Exp $
 /*
- * Copyright (c) 2007, Vanderbilt University
+ * Copyright (c) 2004-5 The Regents of the University  of California.  
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +13,7 @@
  *   notice, this list of conditions and the following disclaimer in the
  *   documentation and/or other materials provided with the
  *   distribution.
- * - Neither the name of the copyright holder nor the names of
+ * - Neither the name of the University of California nor the names of
  *   its contributors may be used to endorse or promote products derived
  *   from this software without specific prior written permission.
  *
@@ -29,58 +30,36 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Author: Miklos Maroti
+ * Copyright (c) 2004-5 Intel Corporation
+ * All rights reserved.
+ *
+ * This file is distributed under the terms in the attached INTEL-LICENSE     
+ * file. If you do not find these files, copies can be found by writing to
+ * Intel Research Berkeley, 2150 Shattuck Avenue, Suite 1300, Berkeley, CA, 
+ * 94704.  Attention:  Intel License Inquiry.
  */
 
-#include <RadioConfig.h>
+/** 
+  * A synchronous initialization interface that takes a single parameter.
+  *
+  * @author Philip Levis
+  * @date   June 6 2005
+  * @see    TEP 107: Boot Sequence
+  */ 
 
-configuration CC2420XIeee154MessageC
-{
-	provides 
-	{
-		interface SplitControl;
 
-		interface Ieee154Send;
-		interface Receive as Ieee154Receive;
+#include "TinyError.h"
 
-		interface Ieee154Packet;
-		interface Packet;
+interface ParameterInit <parameter> {
 
-		interface PacketAcknowledgements;
-		interface LowPowerListening;
-		interface PacketLink;
-
-		interface RadioChannel;
-
-		interface PacketField<uint8_t> as PacketLinkQuality;
-		interface PacketField<uint8_t> as PacketTransmitPower;
-		interface PacketField<uint8_t> as PacketRSSI;
-
-		interface LocalTime<TRadio> as LocalTimeRadio;
-	}
-}
-
-implementation
-{
-	components CC2420XRadioC;
-
-	SplitControl = CC2420XRadioC.SplitControl;
-
-	Ieee154Send = CC2420XRadioC.Ieee154Send;
-	Ieee154Receive = CC2420XRadioC.Ieee154Receive;
-
-	Packet = CC2420XRadioC.PacketForIeee154Message;
-	Ieee154Packet = CC2420XRadioC;
-
-	PacketAcknowledgements = CC2420XRadioC;
-	LowPowerListening = CC2420XRadioC;
-	PacketLink = CC2420XRadioC;
-
-	RadioChannel = CC2420XRadioC;
-
-	PacketLinkQuality = CC2420XRadioC.PacketLinkQuality;
-	PacketTransmitPower = CC2420XRadioC.PacketTransmitPower;
-	PacketRSSI = CC2420XRadioC.PacketRSSI;
-
-	LocalTimeRadio = CC2420XRadioC;
+  /**
+   * Initialize this component. Initialization should not assume that
+   * any component is running: init() cannot call any commands besides
+   * those that initialize other components. This command behaves
+   * identically to Init.init, except that it takes a parameter.
+   *
+   * @param   param   the initialization parameter
+   * @return          SUCCESS if initialized properly, FAIL otherwise.
+   */
+  command error_t init(parameter param);
 }

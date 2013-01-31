@@ -32,55 +32,51 @@
  * Author: Miklos Maroti
  */
 
-#include <RadioConfig.h>
-
-configuration CC2420XIeee154MessageC
+/**
+ * This is a natural extension of the SpiByte interface which allows fast 
+ * data transfers comparable to the SpiStream interface. You may want to
+ * use the following code sequence to write a buffer as fast as possible
+ *
+ *	uint8_t *data;
+ *	uint8_t *response;
+ *
+ *	// start the first byte
+ *	call FastSpiByte.splitWrite(data[0]);
+ *	for(i = 1; i < length; ++i) {
+ *	   // finish the previous one and write the next one
+ *	  response[i-1] = call FastSpiByte.splitReadWrite(data[i]);
+ *	}
+ *	// finish the last byte
+ *	response[length-1] = call FastSpiByte.splitRead();
+ *
+ * You can also do some useful computation (like calculate a CRC) while the
+ * hardware is sending the byte.
+ */
+interface FastSpiByte
 {
-	provides 
-	{
-		interface SplitControl;
+	/**
+	 * Starts a split-phase SPI data transfer with the given data.
+	 * A splitRead/splitReadWrite command must follow this command even 
+	 * if the result is unimportant.
+	 */
+	async command void splitWrite(uint8_t data);
 
-		interface Ieee154Send;
-		interface Receive as Ieee154Receive;
+	/**
+	 * Finishes the split-phase SPI data transfer by waiting till 
+	 * the write command comletes and returning the received data.
+	 */
+	async command uint8_t splitRead();
 
-		interface Ieee154Packet;
-		interface Packet;
+	/**
+	 * This command first reads the SPI register and then writes
+	 * there the new data, then returns. 
+	 */
+	async command uint8_t splitReadWrite(uint8_t data);
 
-		interface PacketAcknowledgements;
-		interface LowPowerListening;
-		interface PacketLink;
-
-		interface RadioChannel;
-
-		interface PacketField<uint8_t> as PacketLinkQuality;
-		interface PacketField<uint8_t> as PacketTransmitPower;
-		interface PacketField<uint8_t> as PacketRSSI;
-
-		interface LocalTime<TRadio> as LocalTimeRadio;
-	}
-}
-
-implementation
-{
-	components CC2420XRadioC;
-
-	SplitControl = CC2420XRadioC.SplitControl;
-
-	Ieee154Send = CC2420XRadioC.Ieee154Send;
-	Ieee154Receive = CC2420XRadioC.Ieee154Receive;
-
-	Packet = CC2420XRadioC.PacketForIeee154Message;
-	Ieee154Packet = CC2420XRadioC;
-
-	PacketAcknowledgements = CC2420XRadioC;
-	LowPowerListening = CC2420XRadioC;
-	PacketLink = CC2420XRadioC;
-
-	RadioChannel = CC2420XRadioC;
-
-	PacketLinkQuality = CC2420XRadioC.PacketLinkQuality;
-	PacketTransmitPower = CC2420XRadioC.PacketTransmitPower;
-	PacketRSSI = CC2420XRadioC.PacketRSSI;
-
-	LocalTimeRadio = CC2420XRadioC;
+	/**
+	 * This is the standard SpiByte.write command but a little
+	 * faster as we should not need to adjust the power state there.
+	 * (To be consistent, this command could have be named splitWriteRead).
+	 */
+	async command uint8_t write(uint8_t data);
 }

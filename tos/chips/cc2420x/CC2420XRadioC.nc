@@ -29,12 +29,8 @@ configuration CC2420XRadioC
 	{
 		interface SplitControl;
 
-
 		interface Ieee154Send;
 		interface Receive as Ieee154Receive;
-		interface SendNotifier as Ieee154Notifier;
-
-		interface Resource as SendResource[uint8_t clint];
 
 		interface Ieee154Packet;
 		interface Packet as PacketForIeee154Message;
@@ -55,8 +51,6 @@ configuration CC2420XRadioC
 		interface LinkPacketMetadata;
 
 		interface LocalTime<TRadio> as LocalTimeRadio;
-		interface PacketTimeStamp<TRadio, uint32_t> as PacketTimeStampRadio;
-		interface PacketTimeStamp<TMilli, uint32_t> as PacketTimeStampMilli;
 	}
 }
 
@@ -75,7 +69,6 @@ implementation
 
 	RadioP.Ieee154PacketLayer -> Ieee154PacketLayerC;
 	RadioP.RadioAlarm -> RadioAlarmC.RadioAlarm[unique(UQ_RADIO_ALARM)];
-	RadioP.PacketTimeStamp -> TimeStampingLayerC;
 	RadioP.CC2420XPacket -> RadioDriverLayerC;
 
 // -------- RadioAlarm
@@ -83,45 +76,23 @@ implementation
 	components new RadioAlarmC();
 	RadioAlarmC.Alarm -> RadioDriverLayerC;
 
-// -------- Automatic RadioSend Resource
-
-#ifndef IEEE154FRAMES_ENABLED
-#ifndef TFRAMES_ENABLED
-	components new AutoResourceAcquireLayerC();
-	AutoResourceAcquireLayerC.Resource -> SendResourceC.Resource[unique(RADIO_SEND_RESOURCE)];
-#else
-	components new DummyLayerC() as AutoResourceAcquireLayerC;
-#endif
-	AutoResourceAcquireLayerC -> TinyosNetworkLayerC.TinyosSend;
-#endif
-
 // -------- RadioSend Resource
 
-
 	components new SimpleFcfsArbiterC(RADIO_SEND_RESOURCE) as SendResourceC;
-	SendResource = SendResourceC;
 
 // -------- Ieee154 Message
 
 	components new Ieee154MessageLayerC();
 	Ieee154MessageLayerC.Ieee154PacketLayer -> Ieee154PacketLayerC;
-	Ieee154MessageLayerC.SubSend -> TinyosNetworkLayerC.Ieee154Send;
-	Ieee154MessageLayerC.SubReceive -> TinyosNetworkLayerC.Ieee154Receive;
-	Ieee154MessageLayerC.RadioPacket -> TinyosNetworkLayerC.Ieee154Packet;
+	Ieee154MessageLayerC.SubSend -> UniqueLayerC;
+	Ieee154MessageLayerC.SubReceive -> PacketLinkLayerC;
+	Ieee154MessageLayerC.RadioPacket -> Ieee154PacketLayerC;
 
 	Ieee154Send = Ieee154MessageLayerC;
 	Ieee154Receive = Ieee154MessageLayerC;
-	Ieee154Notifier = Ieee154MessageLayerC;
 	Ieee154Packet = Ieee154PacketLayerC;
 	PacketForIeee154Message = Ieee154MessageLayerC;
 
-// -------- Tinyos Network
-
-	components new TinyosNetworkLayerC();
-
-	TinyosNetworkLayerC.SubSend -> UniqueLayerC;
-	TinyosNetworkLayerC.SubReceive -> PacketLinkLayerC;
-	TinyosNetworkLayerC.SubPacket -> Ieee154PacketLayerC;
 
 // -------- IEEE 802.15.4 Packet
 
@@ -156,7 +127,7 @@ implementation
 	LowPowerListeningLayerC.SubControl -> MessageBufferLayerC;
 	LowPowerListeningLayerC.SubSend -> MessageBufferLayerC;
 	LowPowerListeningLayerC.SubReceive -> MessageBufferLayerC;
-	LowPowerListeningLayerC.SubPacket -> TimeStampingLayerC;
+	LowPowerListeningLayerC.SubPacket -> MetadataFlagsLayerC;
 	SplitControl = LowPowerListeningLayerC;
 	LowPowerListening = LowPowerListeningLayerC;
 
@@ -198,15 +169,6 @@ implementation
 	CsmaLayerC -> TrafficMonitorLayerC.RadioReceive;
 	CsmaLayerC -> RadioDriverLayerC.RadioCCA;
 
-// -------- TimeStamping
-
-	components new TimeStampingLayerC();
-	TimeStampingLayerC.LocalTimeRadio -> RadioDriverLayerC;
-	TimeStampingLayerC.SubPacket -> MetadataFlagsLayerC;
-	PacketTimeStampRadio = TimeStampingLayerC;
-	PacketTimeStampMilli = TimeStampingLayerC;
-	TimeStampingLayerC.TimeStampFlag -> MetadataFlagsLayerC.PacketFlag[unique(UQ_METADATA_FLAGS)];
-
 // -------- MetadataFlags
 
 	components new MetadataFlagsLayerC();
@@ -229,7 +191,6 @@ implementation
 
 	components CC2420XDriverLayerC as RadioDriverLayerC;
 	RadioDriverLayerC.Config -> RadioP;
-	RadioDriverLayerC.PacketTimeStamp -> TimeStampingLayerC;
 	PacketTransmitPower = RadioDriverLayerC.PacketTransmitPower;
 	PacketLinkQuality = RadioDriverLayerC.PacketLinkQuality;
 	PacketRSSI = RadioDriverLayerC.PacketRSSI;
@@ -238,6 +199,5 @@ implementation
 
 	RadioDriverLayerC.TransmitPowerFlag -> MetadataFlagsLayerC.PacketFlag[unique(UQ_METADATA_FLAGS)];
 	RadioDriverLayerC.RSSIFlag -> MetadataFlagsLayerC.PacketFlag[unique(UQ_METADATA_FLAGS)];
-	RadioDriverLayerC.TimeSyncFlag -> MetadataFlagsLayerC.PacketFlag[unique(UQ_METADATA_FLAGS)];
 	RadioDriverLayerC.RadioAlarm -> RadioAlarmC.RadioAlarm[unique(UQ_RADIO_ALARM)];
 }

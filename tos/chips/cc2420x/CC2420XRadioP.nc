@@ -33,10 +33,7 @@ module CC2420XRadioP
 		interface SoftwareAckConfig;
 		interface UniqueConfig;
 		interface CsmaConfig;
-		interface TrafficMonitorConfig;
 		interface RandomCollisionConfig;
-		interface SlottedCollisionConfig;
-		interface ActiveMessageConfig;
 		interface DummyConfig;
 
 #ifdef LOW_POWER_LISTENING
@@ -49,8 +46,6 @@ module CC2420XRadioP
 		interface Ieee154PacketLayer;
 		interface RadioAlarm;
 		interface RadioPacket as CC2420XPacket;
-
-		interface PacketTimeStamp<TRadio, uint32_t>;
 	}
 }
 
@@ -152,49 +147,6 @@ implementation
 
 	tasklet_async command void UniqueConfig.reportChannelError()
 	{
-#ifdef TRAFFIC_MONITOR
-//		signal TrafficMonitorConfig.channelError();
-#endif
-	}
-
-/*----------------- ActiveMessageConfig -----------------*/
-
-	command am_addr_t ActiveMessageConfig.destination(message_t* msg)
-	{
-		return call Ieee154PacketLayer.getDestAddr(msg);
-	}
-
-	command void ActiveMessageConfig.setDestination(message_t* msg, am_addr_t addr)
-	{
-		call Ieee154PacketLayer.setDestAddr(msg, addr);
-	}
-
-	command am_addr_t ActiveMessageConfig.source(message_t* msg)
-	{
-		return call Ieee154PacketLayer.getSrcAddr(msg);
-	}
-
-	command void ActiveMessageConfig.setSource(message_t* msg, am_addr_t addr)
-	{
-		call Ieee154PacketLayer.setSrcAddr(msg, addr);
-	}
-
-	command am_group_t ActiveMessageConfig.group(message_t* msg)
-	{
-		return call Ieee154PacketLayer.getDestPan(msg);
-	}
-
-	command void ActiveMessageConfig.setGroup(message_t* msg, am_group_t grp)
-	{
-		call Ieee154PacketLayer.setDestPan(msg, grp);
-	}
-
-	command error_t ActiveMessageConfig.checkFrame(message_t* msg)
-	{
-		if( ! call Ieee154PacketLayer.isDataFrame(msg) )
-			call Ieee154PacketLayer.createDataFrame(msg);
-
-		return SUCCESS;
 	}
 
 /*----------------- CsmaConfig -----------------*/
@@ -202,15 +154,6 @@ implementation
 	async command bool CsmaConfig.requiresSoftwareCCA(message_t* msg)
 	{
 		return call Ieee154PacketLayer.isDataFrame(msg);
-	}
-
-/*----------------- TrafficMonitorConfig -----------------*/
-
-	async command uint16_t TrafficMonitorConfig.getBytes(message_t* msg)
-	{
-		// pure airtime: preable (4 bytes), SFD (1 byte), length (1 byte), payload + CRC (len bytes)
-
-		return call CC2420XPacket.payloadLength(msg) + 6;
 	}
 
 /*----------------- RandomCollisionConfig -----------------*/
@@ -261,35 +204,6 @@ implementation
 
 	tasklet_async event void RadioAlarm.fired()
 	{
-	}
-
-/*----------------- SlottedCollisionConfig -----------------*/
-
-	async command uint16_t SlottedCollisionConfig.getInitialDelay()
-	{
-		return 300;
-	}
-
-	async command uint8_t SlottedCollisionConfig.getScheduleExponent()
-	{
-		return 1 + RADIO_ALARM_MILLI_EXP;
-	}
-
-	async command uint16_t SlottedCollisionConfig.getTransmitTime(message_t* msg)
-	{
-		// TODO: check if the timestamp is correct
-		return call PacketTimeStamp.timestamp(msg);
-	}
-
-	async command uint16_t SlottedCollisionConfig.getCollisionWindowStart(message_t* msg)
-	{
-		// the preamble (4 bytes), SFD (1 byte), plus two extra for safety
-		return (call PacketTimeStamp.timestamp(msg)) - (uint16_t)(7 * 32 * RADIO_ALARM_MICROSEC);
-	}
-
-	async command uint16_t SlottedCollisionConfig.getCollisionWindowLength(message_t* msg)
-	{
-		return (uint16_t)(2 * 7 * 32 * RADIO_ALARM_MICROSEC);
 	}
 
 /*----------------- Dummy -----------------*/
