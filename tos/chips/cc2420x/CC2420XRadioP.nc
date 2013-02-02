@@ -142,7 +142,9 @@ implementation
 
 	async command am_addr_t UniqueConfig.getSender(message_t* msg)
 	{
-		return call Ieee154PacketLayer.getSrcAddr(msg);
+		//return call Ieee154PacketLayer.getSrcAddr(msg);
+		// [TODO]: Update this to use 64-bit addresses.
+		return 0;
 	}
 
 	tasklet_async command void UniqueConfig.reportChannelError()

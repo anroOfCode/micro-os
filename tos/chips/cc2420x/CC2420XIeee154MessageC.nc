@@ -40,11 +40,8 @@ configuration CC2420XIeee154MessageC
 	{
 		interface SplitControl;
 
-		interface Ieee154Send;
-		interface Receive as Ieee154Receive;
-
-		interface Ieee154Packet;
-		interface Packet;
+		interface BareSend as Ieee154Send;
+		interface BareReceive as Ieee154Receive;
 
 		interface PacketAcknowledgements;
 		interface LowPowerListening;
@@ -68,9 +65,6 @@ implementation
 
 	Ieee154Send = CC2420XRadioC.Ieee154Send;
 	Ieee154Receive = CC2420XRadioC.Ieee154Receive;
-
-	Packet = CC2420XRadioC.PacketForIeee154Message;
-	Ieee154Packet = CC2420XRadioC;
 
 	PacketAcknowledgements = CC2420XRadioC;
 	LowPowerListening = CC2420XRadioC;

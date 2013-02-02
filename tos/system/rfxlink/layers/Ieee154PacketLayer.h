@@ -41,9 +41,6 @@ typedef nx_struct ieee154_simple_header_t
 {
 	nxle_uint16_t fcf;
 	nxle_uint8_t dsn;
-	nxle_uint16_t destpan;
-	nxle_uint16_t dest;
-	nxle_uint16_t src;
 } ieee154_simple_header_t;
 
 #endif//__IEEE154PACKETLAYER_H__

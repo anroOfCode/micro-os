@@ -29,11 +29,8 @@ configuration CC2420XRadioC
 	{
 		interface SplitControl;
 
-		interface Ieee154Send;
-		interface Receive as Ieee154Receive;
-
-		interface Ieee154Packet;
-		interface Packet as PacketForIeee154Message;
+		interface BareSend as Ieee154Send;
+		interface BareReceive as Ieee154Receive;
 
 		interface PacketAcknowledgements;
 		interface LowPowerListening;
@@ -83,15 +80,11 @@ implementation
 // -------- Ieee154 Message
 
 	components new Ieee154MessageLayerC();
-	Ieee154MessageLayerC.Ieee154PacketLayer -> Ieee154PacketLayerC;
 	Ieee154MessageLayerC.SubSend -> UniqueLayerC;
 	Ieee154MessageLayerC.SubReceive -> PacketLinkLayerC;
-	Ieee154MessageLayerC.RadioPacket -> Ieee154PacketLayerC;
 
 	Ieee154Send = Ieee154MessageLayerC;
 	Ieee154Receive = Ieee154MessageLayerC;
-	Ieee154Packet = Ieee154PacketLayerC;
-	PacketForIeee154Message = Ieee154MessageLayerC;
 
 
 // -------- IEEE 802.15.4 Packet

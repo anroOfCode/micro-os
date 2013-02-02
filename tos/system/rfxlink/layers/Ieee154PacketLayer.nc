@@ -125,37 +125,6 @@ interface Ieee154PacketLayer
 	async command void setDSN(message_t* msg, uint8_t dsn);
 
 	/**
-	 * returns the destination PAN id, values <= 255 are tinyos groups,
-	 * valid only for data frames
-	 */
-	async command uint16_t getDestPan(message_t* msg);
-
-	/**
-	 * Sets the destination PAN id, valid only for data frames
-	 */
-	async command void setDestPan(message_t* msg, uint16_t pan);
-
-	/**
-	 * Returns the destination address, valid only for data frames
-	 */
-	async command uint16_t getDestAddr(message_t* msg);
-
-	/**
-	 * Sets the destination address, valid only for data frames
-	 */
-	async command void setDestAddr(message_t* msg, uint16_t addr);
-
-	/**
-	 * Returns the source address, valid only for data frames
-	 */
-	async command uint16_t getSrcAddr(message_t* msg);
-
-	/**
-	 * Sets the source address, valid only for data frames
-	 */
-	async command void setSrcAddr(message_t* msg, uint16_t addr);
-
-	/**
 	 * Returns TRUE if the packet is a data packet, the ACK_REQ field
 	 * is set and the destination address is not the broadcast address.
 	 */
@@ -166,21 +135,4 @@ interface Ieee154PacketLayer
 	 * is set and the destionation address is this node.
 	 */
 	async command bool requiresAckReply(message_t* msg);
-
-	/**
-	 * Returns the local pan id (AM group)
-	 */
-	async command ieee154_panid_t localPan();
-
-	/**
-	 * Returns the local address of the node (AM address)
-	 */
-	async command ieee154_saddr_t localAddr();
-
-	/**
-	 * Returns TRUE if the destionation of this message is either 0xFFFF
-	 * or is the local address of the node, and the pan address is the
-	 * local one.
-	 */
-	async command bool isForMe(message_t* msg);
 }

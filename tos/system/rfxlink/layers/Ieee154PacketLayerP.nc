@@ -39,13 +39,11 @@ generic module Ieee154PacketLayerP()
 	provides 
 	{
 		interface Ieee154PacketLayer;
-		interface Ieee154Packet;
 		interface RadioPacket;
 	}
 
 	uses
 	{
-		interface ActiveMessageAddress;
 		interface RadioPacket as SubPacket;
 	}
 }
@@ -165,116 +163,16 @@ implementation
 		getHeader(msg)->dsn = dsn;
 	}
 
-	async command uint16_t Ieee154PacketLayer.getDestPan(message_t* msg)
-	{
-		return getHeader(msg)->destpan;
-	}
-
-	async command void Ieee154PacketLayer.setDestPan(message_t* msg, uint16_t pan)
-	{
-		getHeader(msg)->destpan = pan;
-	}
-
-	async command uint16_t Ieee154PacketLayer.getDestAddr(message_t* msg)
-	{
-		return getHeader(msg)->dest;
-	}
-
-	async command void Ieee154PacketLayer.setDestAddr(message_t* msg, uint16_t addr)
-	{
-		getHeader(msg)->dest = addr;
-	}
-
-	async command uint16_t Ieee154PacketLayer.getSrcAddr(message_t* msg)
-	{
-		return getHeader(msg)->src;
-	}
-
-	async command void Ieee154PacketLayer.setSrcAddr(message_t* msg, uint16_t addr)
-	{	
-		getHeader(msg)->src = addr;
-	}
-
 	async command bool Ieee154PacketLayer.requiresAckWait(message_t* msg)
 	{
 		return call Ieee154PacketLayer.getAckRequired(msg)
-			&& call Ieee154PacketLayer.isDataFrame(msg)
-			&& call Ieee154PacketLayer.getDestAddr(msg) != 0xFFFF;
+			&& call Ieee154PacketLayer.isDataFrame(msg);
 	}
 
 	async command bool Ieee154PacketLayer.requiresAckReply(message_t* msg)
 	{
 		return call Ieee154PacketLayer.getAckRequired(msg)
-			&& call Ieee154PacketLayer.isDataFrame(msg)
-			&& call Ieee154PacketLayer.getDestAddr(msg) == call ActiveMessageAddress.amAddress();
-	}
-
-	async command ieee154_saddr_t Ieee154PacketLayer.localAddr()
-	{
-		return call ActiveMessageAddress.amAddress();
-	}
-
-	async command ieee154_panid_t Ieee154PacketLayer.localPan()
-	{
-		return call ActiveMessageAddress.amGroup();
-	}
-
-	async command bool Ieee154PacketLayer.isForMe(message_t* msg)
-	{
-		ieee154_saddr_t addr = call Ieee154PacketLayer.getDestAddr(msg);
-		return (addr == call Ieee154PacketLayer.localAddr() || addr == IEEE154_BROADCAST_ADDR)
-			&& call Ieee154PacketLayer.getDestPan(msg) == call Ieee154PacketLayer.localPan();
-	}
-
-	async event void ActiveMessageAddress.changed()
-	{
-	}
-
-/*----------------- Ieee154Packet -----------------*/
-
-	command ieee154_saddr_t Ieee154Packet.address()
-	{
-		return call Ieee154PacketLayer.localAddr();
-	}
- 
-	command ieee154_saddr_t Ieee154Packet.destination(message_t* msg)
-	{
-		return call Ieee154PacketLayer.getDestAddr(msg);
-	}
- 
-	command ieee154_saddr_t Ieee154Packet.source(message_t* msg)
-	{
-		return call Ieee154PacketLayer.getSrcAddr(msg);
-	}
-
-	command void Ieee154Packet.setDestination(message_t* msg, ieee154_saddr_t addr)
-	{
-		call Ieee154PacketLayer.setDestAddr(msg, addr);
-	}
-
-	command void Ieee154Packet.setSource(message_t* msg, ieee154_saddr_t addr)
-	{
-		call Ieee154PacketLayer.setSrcAddr(msg, addr);
-	}
-
-	command bool Ieee154Packet.isForMe(message_t* msg)
-	{
-		return call Ieee154PacketLayer.isForMe(msg);
-	}
-
-	command ieee154_panid_t Ieee154Packet.pan(message_t* msg)
-	{
-		return call Ieee154PacketLayer.getDestPan(msg);
-	}
-
-	command void Ieee154Packet.setPan(message_t* msg, ieee154_panid_t grp)
-	{
-		call Ieee154PacketLayer.setDestPan(msg, grp);
-	}
-
-	command ieee154_panid_t Ieee154Packet.localPan()
-	{
-		return call Ieee154PacketLayer.localPan();
+			&& call Ieee154PacketLayer.isDataFrame(msg);
 	}
 
 /*----------------- RadioPacket -----------------*/
