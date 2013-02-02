@@ -31,7 +31,7 @@ implementation {
     uint16_t counter = 0;
 
     event void Boot.booted() {
-        call MilliTimer.startPeriodic(500);
+        //call MilliTimer.startPeriodic(500);
         call RadioControl.start();
     }
 
@@ -48,7 +48,7 @@ implementation {
     {
         error_t e;
         radio_count_msg_t* rcm;
-        call Leds.led0Toggle();
+        //call Leds.led0Toggle();
         counter++;
 
         
@@ -63,16 +63,13 @@ implementation {
 
         rcm->counter = counter;
 
-        call Leds.led1Toggle();
         e = call Ieee154Send.send(IEEE154_BROADCAST_ADDR,
                                 &packet,
                                 sizeof(radio_count_msg_t));
         if (e == SUCCESS) {
             //printf("RadioCountToLedsC: packet sent.\n", counter);
-            call Leds.led2Toggle();
         }
         else {
-            call Leds.led2Toggle();
         }
     }
 

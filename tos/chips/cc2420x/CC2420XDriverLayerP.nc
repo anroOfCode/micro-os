@@ -227,7 +227,7 @@ implementation
     {
         cc2420X_status_t status;
         uint8_t idx;
-        
+
         RADIO_ASSERT( call SpiResource.isOwner() );
 
         call CSN.set();
@@ -239,6 +239,7 @@ implementation
         status.value = call FastSpiByte.splitRead();
 
         call CSN.set();
+
         return status;      
     }
 
@@ -611,8 +612,6 @@ implementation
         uint8_t* data;
         uint8_t header;
 
-                call Leds.led2Toggle();
-
         if( cmd != CMD_NONE || (state != STATE_IDLE && state != STATE_RX_ON) || ! isSpiAcquired() || radioIrq )
             return EBUSY;
 
@@ -629,9 +628,9 @@ implementation
             writeRegister(CC2420X_TXCTRL, txctrl.value);
         }
 
-        if( call Config.requiresRssiCca(msg) && !call CCA.get() )
-            return EBUSY;
-            
+        //if( call Config.requiresRssiCca(msg) && !call CCA.get() )
+        //    return EBUSY;
+
         data = getPayload(msg);
         length = getHeader(msg)->length;
         
@@ -695,7 +694,6 @@ implementation
             call DiagMsg.send();
         }
 #endif
-
         return SUCCESS;
     }
 
@@ -956,7 +954,7 @@ implementation
         radioIrq = TRUE;
         call SfdCapture.disable();
 
-
+                                call Leds.led2Toggle();
         // do the rest of the processing
         call Tasklet.schedule();
     }
