@@ -71,8 +71,8 @@ implementation
 
 	async command uint8_t CC2420XDriverConfig.headerPreloadLength()
 	{
-		// we need the fcf, dsn, destpan and dest
-		return 7;
+		// we need the fcf, dsn, len
+		return 4;
 	}
 
 	async command bool CC2420XDriverConfig.requiresRssiCca(message_t* msg)
@@ -144,7 +144,7 @@ implementation
 	{
 		//return call Ieee154PacketLayer.getSrcAddr(msg);
 		// [TODO]: Update this to use 64-bit addresses.
-		return 0;
+		return 1;
 	}
 
 	tasklet_async command void UniqueConfig.reportChannelError()

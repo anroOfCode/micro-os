@@ -52,10 +52,21 @@ implementation {
 
         //printf("RadioCountToLedsC: timer fired, counter is %hu.\n", counter);
 
-        rcm = (radio_count_msg_t*)(((char*) &packet) + 2);
+        rcm = (radio_count_msg_t*)(((char*) &packet) + 10);
         if (rcm == NULL) {
             return;
         }
+
+        *((uint8_t*)&packet) = 0x0D;
+        (((uint8_t*)&packet)[1]) = 0x41;
+        (((uint8_t*)&packet)[2]) = 0x88;
+        (((uint8_t*)&packet)[3]) = (uint8_t)(counter & 0xFF);
+        (((uint8_t*)&packet)[4]) = 0x22;
+        (((uint8_t*)&packet)[5]) = 0x00;
+        (((uint8_t*)&packet)[6]) = 0xFF;
+        (((uint8_t*)&packet)[7]) = 0xFF;
+        (((uint8_t*)&packet)[8]) = 0x01;
+        (((uint8_t*)&packet)[9]) = 0x00;
 
         rcm->counter = counter;
 
@@ -76,8 +87,11 @@ implementation {
     }
 
     event message_t* Ieee154Receive.receive(message_t* bufPtr) {
+        call Leds.led0Toggle();
+        return bufPtr;
         //  printf("RadioCountToLedsC", "Received packet of length %hhu.\n", len);
 
+        /*
         radio_count_msg_t* rcm = (radio_count_msg_t*)bufPtr;
         if (rcm->counter & 0x1) {
         call Leds.led0On();
@@ -98,6 +112,7 @@ implementation {
         call Leds.led2Off();
         }
         return bufPtr;
+        */
     }
 
     event void Ieee154Send.sendDone(message_t* bufPtr, error_t error) {
