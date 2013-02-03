@@ -135,4 +135,9 @@ interface Ieee154PacketLayer
 	 * is set and the destionation address is this node.
 	 */
 	async command bool requiresAckReply(message_t* msg);
+
+	/**
+	 * Returns the source address, valid only for data frames
+	 */
+	async command ieee154_addr_t getSrcAddr(message_t* msg);
 }

@@ -112,10 +112,6 @@ implementation
 		call Ieee154PacketLayer.createAckReply(data, ack);
 	}
 
-#ifndef SOFTWAREACK_TIMEOUT
-#define SOFTWAREACK_TIMEOUT	1000
-#endif
-
 	async command uint16_t SoftwareAckConfig.getAckTimeout()
 	{
 		return (uint16_t)(SOFTWAREACK_TIMEOUT * RADIO_ALARM_MICROSEC);
@@ -140,11 +136,9 @@ implementation
 		call Ieee154PacketLayer.setDSN(msg, dsn);
 	}
 
-	async command am_addr_t UniqueConfig.getSender(message_t* msg)
+	async command ieee154_addr_t UniqueConfig.getSender(message_t* msg)
 	{
-		//return call Ieee154PacketLayer.getSrcAddr(msg);
-		// [TODO]: Update this to use 64-bit addresses.
-		return 1;
+		return call Ieee154PacketLayer.getSrcAddr(msg);
 	}
 
 	tasklet_async command void UniqueConfig.reportChannelError()

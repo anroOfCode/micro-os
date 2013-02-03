@@ -44,7 +44,7 @@ interface UniqueConfig
 	/**
 	 * Returns the sender of the packet. 
 	 */
-	async command am_addr_t getSender(message_t* msg);
+	async command ieee154_addr_t getSender(message_t* msg);
 
 	/**
 	 * Sets the sequence number of the packet.

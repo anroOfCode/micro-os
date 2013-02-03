@@ -46,7 +46,18 @@ module NeighborhoodP
 
 implementation
 {
-	tasklet_norace am_addr_t nodes[NEIGHBORHOOD_SIZE];
+
+	bool are_equal(ieee154_addr_t *addr1, ieee154_addr_t *addr2)
+	{
+		if (addr1->ieee_mode == IEEE154_ADDR_SHORT) {
+			return addr1->ieee_addr.saddr == addr2->ieee_addr.saddr;
+		}
+		else {
+			return addr1->ieee_addr.laddr == addr2->ieee_addr.laddr;
+		}
+	}
+
+	tasklet_norace ieee154_addr_t nodes[NEIGHBORHOOD_SIZE];
 	tasklet_norace uint8_t ages[NEIGHBORHOOD_SIZE];
 	tasklet_norace uint8_t flags[NEIGHBORHOOD_SIZE];
 	tasklet_norace uint8_t time;
@@ -56,13 +67,15 @@ implementation
 	{
 		uint8_t i;
 
-		for(i = 0; i < NEIGHBORHOOD_SIZE; ++i)
-			nodes[i] = AM_BROADCAST_ADDR;
+		for(i = 0; i < NEIGHBORHOOD_SIZE; ++i) {
+			nodes[i].ieee_mode = IEEE154_ADDR_SHORT;
+			nodes[i].ieee_addr.saddr = TOS_BCAST_ADDR;
+		}
 	
 		return SUCCESS;
 	}
 
-	inline tasklet_async command am_addr_t Neighborhood.getNode(uint8_t idx)
+	inline tasklet_async command ieee154_addr_t Neighborhood.getNode(uint8_t idx)
 	{
 		return nodes[idx];
 	}
@@ -72,16 +85,16 @@ implementation
 		return time - ages[idx];
 	}
 
-	tasklet_async uint8_t command Neighborhood.getIndex(am_addr_t node)
+	tasklet_async uint8_t command Neighborhood.getIndex(ieee154_addr_t node)
 	{
 		uint8_t i;
 
-		if( nodes[last] == node )
+		if (are_equal(&nodes[last], &node))
 			return last;
 
 		for(i = 0; i < NEIGHBORHOOD_SIZE; ++i)
 		{
-			if( nodes[i] == node )
+			if (are_equal(&nodes[i], &node))
 			{
 				last = i;
 				break;
@@ -91,12 +104,12 @@ implementation
 		return i;
 	}
 
-	tasklet_async uint8_t command Neighborhood.insertNode(am_addr_t node)
+	tasklet_async uint8_t command Neighborhood.insertNode(ieee154_addr_t node)
 	{
 		uint8_t i;
 		uint8_t maxAge;
 
-		if( nodes[last] == node )
+		if (are_equal(&nodes[last], &node))
 		{
 			if( ages[last] == time )
 				return last;
@@ -113,7 +126,7 @@ implementation
 			{
 				uint8_t age;
 
-				if( nodes[i] == node )
+				if (are_equal(&nodes[i], &node))
 				{
 					last = i;
 					if( ages[i] == time )

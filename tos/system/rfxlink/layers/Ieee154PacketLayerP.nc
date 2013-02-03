@@ -175,6 +175,23 @@ implementation
 			&& call Ieee154PacketLayer.isDataFrame(msg);
 	}
 
+	async command ieee154_addr_t Ieee154PacketLayer.getSrcAddr(message_t* msg)
+	{
+		ieee154_addr_t ret;
+		ieee154_fcf_t* fcf_ptr;
+
+		fcf_ptr = (ieee154_fcf_t*) &(getHeader(msg)->fcf);
+
+		ret.ieee_mode = fcf_ptr->src_addr_mode;
+
+		if (ret.ieee_mode == IEEE154_ADDR_SHORT)
+			memcpy(&ret.ieee_addr.saddr, getHeader(msg) + 7, 2);
+		else
+			memcpy(&ret.ieee_addr.laddr, getHeader(msg) + 7, 8);
+
+		return ret;
+	}
+
 /*----------------- RadioPacket -----------------*/
 
 	async command uint8_t RadioPacket.headerLength(message_t* msg)
