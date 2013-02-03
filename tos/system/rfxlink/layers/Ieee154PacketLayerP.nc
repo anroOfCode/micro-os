@@ -1,44 +1,10 @@
-/*
- * Copyright (c) 2007, Vanderbilt University
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * - Redistributions of source code must retain the above copyright
- *   notice, this list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright
- *   notice, this list of conditions and the following disclaimer in the
- *   documentation and/or other materials provided with the
- *   distribution.
- * - Neither the name of the copyright holder nor the names of
- *   its contributors may be used to endorse or promote products derived
- *   from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
- * THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
- * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
- * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
- * OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Author: Miklos Maroti
- */
-
 #include <Ieee154PacketLayer.h>
 
-generic module Ieee154PacketLayerP()
+generic module Ieee154PacketHelperP()
 {
 	provides 
 	{
-		interface Ieee154PacketLayer;
+		interface Ieee154PacketHelper;
 		interface RadioPacket;
 	}
 
@@ -77,40 +43,40 @@ implementation
 		return ((void*)msg) + call SubPacket.headerLength(msg);
 	}
 
-	async command uint16_t Ieee154PacketLayer.getFCF(message_t* msg)
+	async command uint16_t Ieee154PacketHelper.getFCF(message_t* msg)
 	{
 		return getHeader(msg)->fcf;
 	}
 
-	async command void Ieee154PacketLayer.setFCF(message_t* msg, uint16_t fcf)
+	async command void Ieee154PacketHelper.setFCF(message_t* msg, uint16_t fcf)
 	{
 		getHeader(msg)->fcf = fcf;
 	}
 
-	async command bool Ieee154PacketLayer.isDataFrame(message_t* msg)
+	async command bool Ieee154PacketHelper.isDataFrame(message_t* msg)
 	{
 		return (getHeader(msg)->fcf & IEEE154_DATA_FRAME_MASK) == IEEE154_DATA_FRAME_VALUE;
 	}
 
-	async command void Ieee154PacketLayer.createDataFrame(message_t* msg)
+	async command void Ieee154PacketHelper.createDataFrame(message_t* msg)
 	{
 		// keep the ack requested and frame pending bits
 		getHeader(msg)->fcf = (getHeader(msg)->fcf & IEEE154_DATA_FRAME_PRESERVE)
 			| IEEE154_DATA_FRAME_VALUE;
 	}
 
-	async command bool Ieee154PacketLayer.isAckFrame(message_t* msg)
+	async command bool Ieee154PacketHelper.isAckFrame(message_t* msg)
 	{
 		return (getHeader(msg)->fcf & IEEE154_ACK_FRAME_MASK) == IEEE154_ACK_FRAME_VALUE;
 	}
 
-	async command void Ieee154PacketLayer.createAckFrame(message_t* msg)
+	async command void Ieee154PacketHelper.createAckFrame(message_t* msg)
 	{
 		call SubPacket.setPayloadLength(msg, IEEE154_ACK_FRAME_LENGTH);
 		getHeader(msg)->fcf = IEEE154_ACK_FRAME_VALUE;
 	}
 
-	async command void Ieee154PacketLayer.createAckReply(message_t* data, message_t* ack)
+	async command void Ieee154PacketHelper.createAckReply(message_t* data, message_t* ack)
 	{
 		ieee154_simple_header_t* header = getHeader(ack);
 		call SubPacket.setPayloadLength(ack, IEEE154_ACK_FRAME_LENGTH);
@@ -119,7 +85,7 @@ implementation
 		header->dsn = getHeader(data)->dsn;
 	}
 
-	async command bool Ieee154PacketLayer.verifyAckReply(message_t* data, message_t* ack)
+	async command bool Ieee154PacketHelper.verifyAckReply(message_t* data, message_t* ack)
 	{
 		ieee154_simple_header_t* header = getHeader(ack);
 
@@ -127,12 +93,12 @@ implementation
 			&& (header->fcf & IEEE154_ACK_FRAME_MASK) == IEEE154_ACK_FRAME_VALUE;
 	}
 
-	async command bool Ieee154PacketLayer.getAckRequired(message_t* msg)
+	async command bool Ieee154PacketHelper.getAckRequired(message_t* msg)
 	{
 		return getHeader(msg)->fcf & (1 << IEEE154_FCF_ACK_REQ) ? TRUE : FALSE;
 	}
 
-	async command void Ieee154PacketLayer.setAckRequired(message_t* msg, bool ack)
+	async command void Ieee154PacketHelper.setAckRequired(message_t* msg, bool ack)
 	{
 		if( ack )
 			getHeader(msg)->fcf |= (1 << IEEE154_FCF_ACK_REQ);
@@ -140,12 +106,12 @@ implementation
 			getHeader(msg)->fcf &= ~(uint16_t)(1 << IEEE154_FCF_ACK_REQ);
 	}
 
-	async command bool Ieee154PacketLayer.getFramePending(message_t* msg)
+	async command bool Ieee154PacketHelper.getFramePending(message_t* msg)
 	{
 		return getHeader(msg)->fcf & (1 << IEEE154_FCF_FRAME_PENDING) ? TRUE : FALSE;
 	}
 
-	async command void Ieee154PacketLayer.setFramePending(message_t* msg, bool pending)
+	async command void Ieee154PacketHelper.setFramePending(message_t* msg, bool pending)
 	{
 		if( pending )
 			getHeader(msg)->fcf |= (1 << IEEE154_FCF_FRAME_PENDING);
@@ -153,29 +119,29 @@ implementation
 			getHeader(msg)->fcf &= ~(uint16_t)(1 << IEEE154_FCF_FRAME_PENDING);
 	}
 
-	async command uint8_t Ieee154PacketLayer.getDSN(message_t* msg)
+	async command uint8_t Ieee154PacketHelper.getDSN(message_t* msg)
 	{
 		return getHeader(msg)->dsn;
 	}
 
-	async command void Ieee154PacketLayer.setDSN(message_t* msg, uint8_t dsn)
+	async command void Ieee154PacketHelper.setDSN(message_t* msg, uint8_t dsn)
 	{
 		getHeader(msg)->dsn = dsn;
 	}
 
-	async command bool Ieee154PacketLayer.requiresAckWait(message_t* msg)
+	async command bool Ieee154PacketHelper.requiresAckWait(message_t* msg)
 	{
-		return call Ieee154PacketLayer.getAckRequired(msg)
-			&& call Ieee154PacketLayer.isDataFrame(msg);
+		return call Ieee154PacketHelper.getAckRequired(msg)
+			&& call Ieee154PacketHelper.isDataFrame(msg);
 	}
 
-	async command bool Ieee154PacketLayer.requiresAckReply(message_t* msg)
+	async command bool Ieee154PacketHelper.requiresAckReply(message_t* msg)
 	{
-		return call Ieee154PacketLayer.getAckRequired(msg)
-			&& call Ieee154PacketLayer.isDataFrame(msg);
+		return call Ieee154PacketHelper.getAckRequired(msg)
+			&& call Ieee154PacketHelper.isDataFrame(msg);
 	}
 
-	async command ieee154_addr_t Ieee154PacketLayer.getSrcAddr(message_t* msg)
+	async command ieee154_addr_t Ieee154PacketHelper.getSrcAddr(message_t* msg)
 	{
 		ieee154_addr_t ret;
 		ieee154_fcf_t* fcf_ptr;
@@ -221,7 +187,7 @@ implementation
 
 	async command void RadioPacket.clear(message_t* msg)
 	{
-		call Ieee154PacketLayer.createDataFrame(msg);
+		call Ieee154PacketHelper.createDataFrame(msg);
 		call SubPacket.clear(msg);
 	}
 }

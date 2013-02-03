@@ -1,11 +1,3 @@
-/* -*- mode:c++; indent-tabs-mode: nil -*- */
-/**
- * DS2411 tmote sky serial id
- */
-/**
- * @author: Andreas Koepke (koepke@tkn.tu-berlin.de)
- */
-
 #include "Timer.h"
 
 configuration Ds2411C {

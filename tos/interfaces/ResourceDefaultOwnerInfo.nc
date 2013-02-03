@@ -1,4 +1,3 @@
-
 interface ResourceDefaultOwnerInfo {
   /**
    * Check whether a DefaultOwner has an active client.

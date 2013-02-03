@@ -1,4 +1,3 @@
-
 #include "PlatformIeeeEui64.h"
 
 module DallasId48ToIeeeEui64C {

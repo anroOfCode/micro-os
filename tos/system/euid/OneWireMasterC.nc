@@ -1,9 +1,3 @@
-/* -*- mode:c++; indent-tabs-mode: nil -*- */
-/**
- * Dallas/Maxim 1wire bus master
- *
- */
-
 module OneWireMasterC {
     provides {
         interface OneWireStream as OneWire;

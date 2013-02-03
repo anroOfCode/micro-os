@@ -1,26 +1,3 @@
-/*
- * Copyright (c) 2010, Vanderbilt University
- * All rights reserved.
- *
- * Permission to use, copy, modify, and distribute this software and its
- * documentation for any purpose, without fee, and without written agreement is
- * hereby granted, provided that the above copyright notice, the following
- * two paragraphs and the author appear in all copies of this software.
- * 
- * IN NO EVENT SHALL THE VANDERBILT UNIVERSITY BE LIABLE TO ANY PARTY FOR
- * DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
- * OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE VANDERBILT
- * UNIVERSITY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- * THE VANDERBILT UNIVERSITY SPECIFICALLY DISCLAIMS ANY WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
- * AND FITNESS FOR A PARTICULAR PURPOSE.  THE SOFTWARE PROVIDED HEREUNDER IS
- * ON AN "AS IS" BASIS, AND THE VANDERBILT UNIVERSITY HAS NO OBLIGATION TO
- * PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
- *
- * Author: Miklos Maroti, Janos Sallai
- */
-
 #include <CC2420XRadio.h>
 #include <RadioConfig.h>
 #include <Tasklet.h>
@@ -43,7 +20,7 @@ module CC2420XRadioP
 
 	uses
 	{
-		interface Ieee154PacketLayer;
+		interface Ieee154PacketHelper;
 		interface RadioAlarm;
 		interface RadioPacket as CC2420XPacket;
 	}
@@ -77,39 +54,39 @@ implementation
 
 	async command bool CC2420XDriverConfig.requiresRssiCca(message_t* msg)
 	{
-		return call Ieee154PacketLayer.isDataFrame(msg);
+		return call Ieee154PacketHelper.isDataFrame(msg);
 	}
 
 /*----------------- SoftwareAckConfig -----------------*/
 
 	async command bool SoftwareAckConfig.requiresAckWait(message_t* msg)
 	{
-		return call Ieee154PacketLayer.requiresAckWait(msg);
+		return call Ieee154PacketHelper.requiresAckWait(msg);
 	}
 
 	async command bool SoftwareAckConfig.isAckPacket(message_t* msg)
 	{
-		return call Ieee154PacketLayer.isAckFrame(msg);
+		return call Ieee154PacketHelper.isAckFrame(msg);
 	}
 
 	async command bool SoftwareAckConfig.verifyAckPacket(message_t* data, message_t* ack)
 	{
-		return call Ieee154PacketLayer.verifyAckReply(data, ack);
+		return call Ieee154PacketHelper.verifyAckReply(data, ack);
 	}
 
 	async command void SoftwareAckConfig.setAckRequired(message_t* msg, bool ack)
 	{
-		call Ieee154PacketLayer.setAckRequired(msg, ack);
+		call Ieee154PacketHelper.setAckRequired(msg, ack);
 	}
 
 	async command bool SoftwareAckConfig.requiresAckReply(message_t* msg)
 	{
-		return call Ieee154PacketLayer.requiresAckReply(msg);
+		return call Ieee154PacketHelper.requiresAckReply(msg);
 	}
 
 	async command void SoftwareAckConfig.createAckPacket(message_t* data, message_t* ack)
 	{
-		call Ieee154PacketLayer.createAckReply(data, ack);
+		call Ieee154PacketHelper.createAckReply(data, ack);
 	}
 
 	async command uint16_t SoftwareAckConfig.getAckTimeout()
@@ -128,17 +105,17 @@ implementation
 
 	async command uint8_t UniqueConfig.getSequenceNumber(message_t* msg)
 	{
-		return call Ieee154PacketLayer.getDSN(msg);
+		return call Ieee154PacketHelper.getDSN(msg);
 	}
 
 	async command void UniqueConfig.setSequenceNumber(message_t* msg, uint8_t dsn)
 	{
-		call Ieee154PacketLayer.setDSN(msg, dsn);
+		call Ieee154PacketHelper.setDSN(msg, dsn);
 	}
 
 	async command ieee154_addr_t UniqueConfig.getSender(message_t* msg)
 	{
-		return call Ieee154PacketLayer.getSrcAddr(msg);
+		return call Ieee154PacketHelper.getSrcAddr(msg);
 	}
 
 	tasklet_async command void UniqueConfig.reportChannelError()
@@ -149,7 +126,7 @@ implementation
 
 	async command bool CsmaConfig.requiresSoftwareCCA(message_t* msg)
 	{
-		return call Ieee154PacketLayer.isDataFrame(msg);
+		return call Ieee154PacketHelper.isDataFrame(msg);
 	}
 
 /*----------------- RandomCollisionConfig -----------------*/
@@ -190,7 +167,7 @@ implementation
 		time = call RadioAlarm.getNow();
 
 		// estimated response time (download the message, etc) is 5-8 bytes
-		if( call Ieee154PacketLayer.requiresAckReply(msg) )
+		if( call Ieee154PacketHelper.requiresAckReply(msg) )
 			time += (uint16_t)(32 * (-5 + 16 + 11 + 5) * RADIO_ALARM_MICROSEC);
 		else
 			time += (uint16_t)(32 * (-5 + 5) * RADIO_ALARM_MICROSEC);
@@ -214,12 +191,12 @@ implementation
 
 	command bool LowPowerListeningConfig.needsAutoAckRequest(message_t* msg)
 	{
-		return call Ieee154PacketLayer.getDestAddr(msg) != TOS_BCAST_ADDR;
+		return call Ieee154PacketHelper.getDestAddr(msg) != TOS_BCAST_ADDR;
 	}
 
 	command bool LowPowerListeningConfig.ackRequested(message_t* msg)
 	{
-		return call Ieee154PacketLayer.getAckRequired(msg);
+		return call Ieee154PacketHelper.getAckRequired(msg);
 	}
 
 	command uint16_t LowPowerListeningConfig.getListenLength()

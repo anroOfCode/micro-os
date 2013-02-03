@@ -9,6 +9,7 @@ configuration CC2420XRadioC
         interface BareSend as Ieee154Send;
         interface BareReceive as Ieee154Receive;
 
+
         interface PacketAcknowledgements;
         interface LowPowerListening;
         interface PacketLink;
@@ -41,7 +42,7 @@ implementation
     components AssertC;
 #endif
 
-    RadioP.Ieee154PacketLayer -> Ieee154PacketLayerC;
+    RadioP.Ieee154PacketHelper -> Ieee154PacketLayerC;
     RadioP.RadioAlarm -> RadioAlarmC.RadioAlarm[unique(UQ_RADIO_ALARM)];
     RadioP.CC2420XPacket -> RadioDriverLayerC;
 
@@ -50,19 +51,10 @@ implementation
     components new RadioAlarmC();
     RadioAlarmC.Alarm -> RadioDriverLayerC;
 
-// -------- RadioSend Resource
-
-    components new SimpleFcfsArbiterC(RADIO_SEND_RESOURCE) as SendResourceC;
-
 // -------- Ieee154 Message
 
-    components new Ieee154MessageLayerC();
-    Ieee154MessageLayerC.SubSend -> UniqueLayerC;
-    Ieee154MessageLayerC.SubReceive -> PacketLinkLayerC;
-
-    Ieee154Send = Ieee154MessageLayerC;
-    Ieee154Receive = Ieee154MessageLayerC;
-
+    Ieee154Send = UniqueLayerC;
+    Ieee154Receive = PacketLinkLayerC;
 
 // -------- IEEE 802.15.4 Packet
 

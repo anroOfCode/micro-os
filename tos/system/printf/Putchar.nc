@@ -8,7 +8,6 @@
  * implementation in PutcharP.nc, so "#undef putchar" prior to your
  * use of this identifier when implementing this interface.
  *
- * @author Peter A. Bigot <pabigot@users.sourceforge.net>
  */
 interface Putchar {
 
