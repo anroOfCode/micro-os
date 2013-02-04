@@ -9,7 +9,6 @@ configuration Ieee154MessageC  {
     interface Packet;
 
     interface PacketAcknowledgements;
-    interface LinkPacketMetadata;
     interface LowPowerListening;
     interface PacketLink;
   }
@@ -24,7 +23,6 @@ configuration Ieee154MessageC  {
   Packet = Msg;
   
   PacketAcknowledgements = Msg;
-  LinkPacketMetadata = Msg;
   LowPowerListening = Msg;
   PacketLink = Msg;
 }

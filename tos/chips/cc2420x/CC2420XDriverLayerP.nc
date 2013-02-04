@@ -18,7 +18,6 @@ module CC2420XDriverLayerP
         interface PacketField<uint8_t> as PacketTransmitPower;
         interface PacketField<uint8_t> as PacketRSSI;
         interface PacketField<uint8_t> as PacketLinkQuality;
-        interface LinkPacketMetadata;
     }
 
     uses
@@ -1193,10 +1192,4 @@ implementation
         getMeta(msg)->lqi = value;
     }
 
-/*----------------- LinkPacketMetadata -----------------*/
-
-    async command bool LinkPacketMetadata.highChannelQuality(message_t* msg)
-    {
-        return call PacketLinkQuality.get(msg) > 105;
-    }
 }

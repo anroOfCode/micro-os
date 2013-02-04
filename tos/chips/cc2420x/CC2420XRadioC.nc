@@ -23,7 +23,6 @@ configuration CC2420XRadioC
         interface PacketField<uint8_t> as PacketLinkQuality;
         interface PacketField<uint8_t> as PacketTransmitPower;
         interface PacketField<uint8_t> as PacketRSSI;
-        interface LinkPacketMetadata;
 
         interface LocalTime<TRadio> as LocalTimeRadio;
     }
@@ -156,7 +155,6 @@ implementation
     PacketTransmitPower = RadioDriverLayerC.PacketTransmitPower;
     PacketLinkQuality = RadioDriverLayerC.PacketLinkQuality;
     PacketRSSI = RadioDriverLayerC.PacketRSSI;
-    LinkPacketMetadata = RadioDriverLayerC;
     LocalTimeRadio = RadioDriverLayerC;
 
     RadioDriverLayerC.TransmitPowerFlag -> MetadataFlagsLayerC.PacketFlag[unique(UQ_METADATA_FLAGS)];

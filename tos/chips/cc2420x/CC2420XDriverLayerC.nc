@@ -14,7 +14,6 @@ configuration CC2420XDriverLayerC
 		interface PacketField<uint8_t> as PacketTransmitPower;
 		interface PacketField<uint8_t> as PacketRSSI;
 		interface PacketField<uint8_t> as PacketLinkQuality;
-		interface LinkPacketMetadata;
 
 		interface LocalTime<TRadio> as LocalTimeRadio;
 		interface Alarm<TRadio, tradio_size>;
@@ -65,7 +64,6 @@ implementation
 	RSSIFlag = DriverLayerP.RSSIFlag;
 
 	PacketLinkQuality = DriverLayerP.PacketLinkQuality;
-	LinkPacketMetadata = DriverLayerP;
 
 	Alarm = HplC.Alarm;
 	RadioAlarm = DriverLayerP.RadioAlarm;
