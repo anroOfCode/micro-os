@@ -20,6 +20,23 @@
 #define SOFTWAREACK_TIMEOUT	800
 #endif
 
+#define LOW_POWER_LISTENING
+
+#ifndef DELAY_AFTER_RECEIVE
+#define LPL_DELAY_AFTER_RECEIVE 100
+#endif
+
+/**
+ * The LPL defaults to stay-on.
+ */
+#ifndef LPL_DEF_LOCAL_WAKEUP
+#define LPL_DEF_LOCAL_WAKEUP 0
+#endif
+
+#ifndef LPL_DEF_REMOTE_WAKEUP
+#define LPL_DEF_REMOTE_WAKEUP 0
+#endif
+
 /**
  * This is the timer type of the radio alarm interface
  */

@@ -189,11 +189,6 @@ implementation
 
 #ifdef LOW_POWER_LISTENING
 
-	command bool LowPowerListeningConfig.needsAutoAckRequest(message_t* msg)
-	{
-		return call Ieee154PacketHelper.getDestAddr(msg) != TOS_BCAST_ADDR;
-	}
-
 	command bool LowPowerListeningConfig.ackRequested(message_t* msg)
 	{
 		return call Ieee154PacketHelper.getAckRequired(msg);

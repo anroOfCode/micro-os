@@ -24,7 +24,6 @@ generic configuration LowPowerListeningLayerC()
 implementation
 {
 	components new LowPowerListeningLayerP(), new TimerMilliC();
-	components SystemLowPowerListeningC;
 
 	SplitControl = LowPowerListeningLayerP;
 	Send = LowPowerListeningLayerP;
@@ -40,7 +39,6 @@ implementation
 	PacketAcknowledgements = LowPowerListeningLayerP;
 	
 	LowPowerListeningLayerP.Timer -> TimerMilliC;
-	LowPowerListeningLayerP.SystemLowPowerListening -> SystemLowPowerListeningC;
 
 	components NoLedsC as LedsC;
 	LowPowerListeningLayerP.Leds -> LedsC;

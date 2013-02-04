@@ -1,6 +1,5 @@
 #include <RadioAssert.h>
 #include <LowPowerListeningLayer.h>
-#include <Lpl.h>
 
 generic module LowPowerListeningLayerP()
 {
@@ -24,7 +23,6 @@ generic module LowPowerListeningLayerP()
 		interface PacketAcknowledgements;
 		interface LowPowerListeningConfig as Config;
 		interface Timer<TMilli>;
-		interface SystemLowPowerListening;
 
 		interface Leds;
 	}
@@ -163,7 +161,7 @@ implementation
 		{
 			state = LISTEN_WAIT;
 			if( sleepInterval > 0 )
-				call Timer.startOneShot(call SystemLowPowerListening.getDelayAfterReceive());
+				call Timer.startOneShot(LPL_DELAY_AFTER_RECEIVE);
 
 			signal Send.sendDone(txMsg, txError);
 		}
@@ -256,7 +254,7 @@ implementation
 			state = LISTEN_WAIT;
 
 		if( state == LISTEN_WAIT && sleepInterval > 0 )
-			call Timer.startOneShot(call SystemLowPowerListening.getDelayAfterReceive());
+			call Timer.startOneShot(LPL_DELAY_AFTER_RECEIVE);
 
 		return signal Receive.receive(msg);
 	}
@@ -279,9 +277,6 @@ implementation
 			state = SLEEP_SUBSTOP_DONE_TOSEND;
 		else
 			return EBUSY;
-
-		if( call Config.needsAutoAckRequest(msg) )
-			call PacketAcknowledgements.requestAck(msg);
 
 		txMsg = msg;
 		txError = FAIL;
