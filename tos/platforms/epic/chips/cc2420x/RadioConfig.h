@@ -15,27 +15,17 @@
 #define CC2420X_DEF_CHANNEL	11
 #endif
 
-/* The number of microseconds a sending micaz mote will wait for an acknowledgement */
-#ifndef SOFTWAREACK_TIMEOUT
-#define SOFTWAREACK_TIMEOUT	800
-#endif
-
 #define LOW_POWER_LISTENING
 
-#ifndef DELAY_AFTER_RECEIVE
+#define SOFTACK_TIMEOUT	2500
+
 #define LPL_DELAY_AFTER_RECEIVE 100
-#endif
+#define LPL_LOCAL_WAKEUP 0 // 500ms Interval
+#define LPL_LISTEN_LENGTH 5 // 5ms Listen for 1% of that
 
-/**
- * The LPL defaults to stay-on.
- */
-#ifndef LPL_DEF_LOCAL_WAKEUP
-#define LPL_DEF_LOCAL_WAKEUP 0
-#endif
-
-#ifndef LPL_DEF_REMOTE_WAKEUP
-#define LPL_DEF_REMOTE_WAKEUP 0
-#endif
+#define RCA_MIN_BACKOFF 320
+#define RCA_INIT_BACKOFF 4960
+#define RCA_CONG_BACKOFF 2240
 
 /**
  * This is the timer type of the radio alarm interface

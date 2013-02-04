@@ -58,7 +58,7 @@ implementation
 		}
 		post calcNextRandom();
 
-		return (a % maxBackoff) + call Config.getMinimumBackoff();
+		return (a % maxBackoff) + RCA_MIN_BACKOFF;
 	}
 
 	tasklet_async command error_t RadioSend.send(message_t* msg)
@@ -68,7 +68,7 @@ implementation
 
 		txMsg = msg;
 		state = STATE_TX_PENDING_FIRST;
-		call RadioAlarm.wait(getBackoff(call Config.getInitialBackoff(msg)));
+		call RadioAlarm.wait(getBackoff(RCA_INIT_BACKOFF));
 
 		return SUCCESS;
 	}
@@ -99,7 +99,7 @@ implementation
 			if( (state & ~STATE_BARRIER) == STATE_TX_PENDING_FIRST )
 			{
 				state = (state & STATE_BARRIER) | STATE_TX_PENDING_SECOND;
-				call RadioAlarm.wait(getBackoff(call Config.getCongestionBackoff(txMsg)));
+				call RadioAlarm.wait(getBackoff(RCA_CONG_BACKOFF));
 			}
 			else
 			{

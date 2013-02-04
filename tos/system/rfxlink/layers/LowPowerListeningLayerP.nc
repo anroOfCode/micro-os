@@ -35,7 +35,7 @@ implementation
 		MIN_SLEEP = 2,		// the minimum sleep interval in milliseconds
 	};
 
-	uint16_t sleepInterval = LPL_DEF_LOCAL_WAKEUP;
+	uint16_t sleepInterval = LPL_LOCAL_WAKEUP;
 
 	message_t* txMsg;
 	error_t txError;
@@ -119,7 +119,7 @@ implementation
 		{
 			state = LISTEN_WAIT;
 			if( sleepInterval > 0 )
-				call Timer.startOneShot(call Config.getListenLength());
+				call Timer.startOneShot(LPL_LISTEN_LENGTH);
 		}
 		else if( state == SLEEP_TIMER )
 		{
@@ -136,11 +136,11 @@ implementation
 		}
 		else if( state == SEND_TIMER )
 		{
-			transmitInterval = call LowPowerListening.getRemoteWakeupInterval(txMsg);
+			transmitInterval = LPL_LOCAL_WAKEUP;
 
 			if( transmitInterval > 0 )
 				call Timer.startOneShot(transmitInterval 
-					+ 2 * call Config.getListenLength());
+					+ 2 * LPL_LISTEN_LENGTH);
 
 			state = SEND_SUBSEND;
 			post transition();

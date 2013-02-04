@@ -3,12 +3,6 @@
 interface SoftwareAckConfig
 {
 	/**
-	 * Returns the acknowledgement timeout (in the radio clock units),
-	 * in which a sent packet must be acknowledged.
-	 */
-	async command uint16_t getAckTimeout();
-
-	/**
 	 * Sets the flag in the message indicating to the receiver whether
 	 * the message should be acknowledged.
 	 */

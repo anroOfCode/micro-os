@@ -76,7 +76,7 @@ implementation
 
 			if( error == SUCCESS && call Config.requiresAckWait(txMsg) && call RadioAlarm.isFree() )
 			{
-				call RadioAlarm.wait(call Config.getAckTimeout());
+				call RadioAlarm.wait(SOFTACK_TIMEOUT);
 				state = STATE_ACK_WAIT;
 			}
 			else

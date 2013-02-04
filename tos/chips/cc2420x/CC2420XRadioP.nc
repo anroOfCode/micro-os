@@ -9,13 +9,9 @@ module CC2420XRadioP
 		interface CC2420XDriverConfig;
 		interface SoftwareAckConfig;
 		interface UniqueConfig;
-		interface CsmaConfig;
-		interface RandomCollisionConfig;
 		interface DummyConfig;
-
-#ifdef LOW_POWER_LISTENING
 		interface LowPowerListeningConfig;
-#endif
+		interface RandomCollisionConfig;
 	}
 
 	uses
@@ -89,11 +85,6 @@ implementation
 		call Ieee154PacketHelper.createAckReply(data, ack);
 	}
 
-	async command uint16_t SoftwareAckConfig.getAckTimeout()
-	{
-		return (uint16_t)(SOFTWAREACK_TIMEOUT * RADIO_ALARM_MICROSEC);
-	}
-
 	tasklet_async command void SoftwareAckConfig.reportChannelError()
 	{
 #ifdef TRAFFIC_MONITOR
@@ -122,42 +113,11 @@ implementation
 	{
 	}
 
+	command bool LowPowerListeningConfig.ackRequested(message_t* msg)
+	{
+		return call Ieee154PacketHelper.getAckRequired(msg);
+	}
 /*----------------- CsmaConfig -----------------*/
-
-	async command bool CsmaConfig.requiresSoftwareCCA(message_t* msg)
-	{
-		return call Ieee154PacketHelper.isDataFrame(msg);
-	}
-
-/*----------------- RandomCollisionConfig -----------------*/
-
-	/*
-	 * We try to use the same values as in CC2420
-	 *
-	 * CC2420_MIN_BACKOFF = 10 jiffies = 320 microsec
-	 * CC2420_BACKOFF_PERIOD = 10 jiffies
-	 * initial backoff = 0x1F * CC2420_BACKOFF_PERIOD = 310 jiffies = 9920 microsec
-	 * congestion backoff = 0x7 * CC2420_BACKOFF_PERIOD = 70 jiffies = 2240 microsec
-	 */
-
-#ifndef LOW_POWER_LISTENING
-
-	async command uint16_t RandomCollisionConfig.getMinimumBackoff()
-	{
-		return (uint16_t)(320 * RADIO_ALARM_MICROSEC);
-	}
-
-	async command uint16_t RandomCollisionConfig.getInitialBackoff(message_t* msg)
-	{
-		return (uint16_t)(9920 * RADIO_ALARM_MICROSEC);
-	}
-
-	async command uint16_t RandomCollisionConfig.getCongestionBackoff(message_t* msg)
-	{
-		return (uint16_t)(2240 * RADIO_ALARM_MICROSEC);
-	}
-
-#endif
 
 	async command uint16_t RandomCollisionConfig.getTransmitBarrier(message_t* msg)
 	{
@@ -180,40 +140,7 @@ implementation
 	}
 
 /*----------------- Dummy -----------------*/
-
 	async command void DummyConfig.nothing()
 	{
 	}
-
-/*----------------- LowPowerListening -----------------*/
-
-#ifdef LOW_POWER_LISTENING
-
-	command bool LowPowerListeningConfig.ackRequested(message_t* msg)
-	{
-		return call Ieee154PacketHelper.getAckRequired(msg);
-	}
-
-	command uint16_t LowPowerListeningConfig.getListenLength()
-	{
-		return 5;
-	}
-
-	async command uint16_t RandomCollisionConfig.getMinimumBackoff()
-	{
-		return (uint16_t)(320 * RADIO_ALARM_MICROSEC);
-	}
-
-	async command uint16_t RandomCollisionConfig.getInitialBackoff(message_t* msg)
-	{
-		return (uint16_t)(1600 * RADIO_ALARM_MICROSEC);
-	}
-
-	async command uint16_t RandomCollisionConfig.getCongestionBackoff(message_t* msg)
-	{
-		return (uint16_t)(3200 * RADIO_ALARM_MICROSEC);
-	}
-
-#endif
-
 }

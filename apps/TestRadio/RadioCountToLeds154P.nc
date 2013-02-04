@@ -20,7 +20,7 @@ implementation {
     uint16_t counter = 0;
 
     event void Boot.booted() {
-        call MilliTimer.startPeriodic(500);
+        call MilliTimer.startPeriodic(1000);
         call RadioControl.start();
     }
 
