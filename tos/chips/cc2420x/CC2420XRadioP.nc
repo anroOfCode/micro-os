@@ -113,10 +113,6 @@ implementation
 	{
 	}
 
-	command bool LowPowerListeningConfig.ackRequested(message_t* msg)
-	{
-		return call Ieee154PacketHelper.getAckRequired(msg);
-	}
 /*----------------- CsmaConfig -----------------*/
 
 	async command uint16_t RandomCollisionConfig.getTransmitBarrier(message_t* msg)

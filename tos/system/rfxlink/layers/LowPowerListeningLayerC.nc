@@ -16,7 +16,7 @@ generic configuration LowPowerListeningLayerC()
 		interface BareReceive as SubReceive;
 		interface RadioPacket as SubPacket;
 
-		interface LowPowerListeningConfig as Config;
+		interface Ieee154PacketHelper;
 		interface PacketAcknowledgements;
 	}
 }
@@ -35,7 +35,7 @@ implementation
 	SubSend = LowPowerListeningLayerP;
 	SubReceive = LowPowerListeningLayerP;
 	SubPacket = LowPowerListeningLayerP;
-	Config = LowPowerListeningLayerP;
+	Ieee154PacketHelper = LowPowerListeningLayerP;
 	PacketAcknowledgements = LowPowerListeningLayerP;
 	
 	LowPowerListeningLayerP.Timer -> TimerMilliC;

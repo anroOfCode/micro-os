@@ -21,7 +21,7 @@ generic module LowPowerListeningLayerP()
 		interface RadioPacket as SubPacket;
 
 		interface PacketAcknowledgements;
-		interface LowPowerListeningConfig as Config;
+		interface Ieee154PacketHelper;
 		interface Timer<TMilli>;
 
 		interface Leds;
@@ -317,7 +317,7 @@ implementation
 		if( error != SUCCESS
 			|| call LowPowerListening.getRemoteWakeupInterval(msg) == 0
 			|| state == SEND_SUBSEND_DONE_LAST
-			|| (call Config.ackRequested(msg) && call PacketAcknowledgements.wasAcked(msg)) )
+			|| (call Ieee154PacketHelper.getAckRequired(msg) && call PacketAcknowledgements.wasAcked(msg)) )
 		{
 			call Timer.stop();
 			state = SEND_DONE;
