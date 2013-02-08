@@ -37,6 +37,11 @@ implementation
 
     components CC2420XRadioP as RadioP;
 
+// -------- IEEE 802.15.4 Packet
+
+    components new Ieee154PacketLayerC();
+    Ieee154PacketLayerC.SubPacket -> PacketLinkLayerC;
+    
 #ifdef RADIO_DEBUG
     components AssertC;
 #endif
@@ -55,15 +60,10 @@ implementation
     Ieee154Send = UniqueLayerC;
     Ieee154Receive = PacketLinkLayerC;
 
-// -------- IEEE 802.15.4 Packet
-
-    components new Ieee154PacketLayerC();
-    Ieee154PacketLayerC.SubPacket -> PacketLinkLayerC;
-
 // -------- UniqueLayer Send part (wired twice)
 
     components new UniqueLayerC();
-    UniqueLayerC.Config -> RadioP;
+    UniqueLayerC.Ieee154PacketHelper -> Ieee154PacketLayerC.Ieee154PacketHelper;
     UniqueLayerC.SubSend -> PacketLinkLayerC;
 
 // -------- Packet Link

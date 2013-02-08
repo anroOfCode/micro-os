@@ -10,8 +10,7 @@ generic configuration UniqueLayerC()
 	{
 		interface BareSend as SubSend;
 		interface RadioReceive as SubReceive;
-
-		interface UniqueConfig as Config;
+		interface Ieee154PacketHelper;
 	}
 }
 
@@ -28,5 +27,5 @@ implementation
 
 	RadioReceive = UniqueLayerP;
 	SubReceive = UniqueLayerP;
-	Config = UniqueLayerP;
+	Ieee154PacketHelper = UniqueLayerP;
 }

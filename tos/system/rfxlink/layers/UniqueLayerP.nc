@@ -16,7 +16,7 @@ generic module UniqueLayerP()
 		interface BareSend as SubSend;
 		interface RadioReceive as SubReceive;
 
-		interface UniqueConfig;
+		interface Ieee154PacketHelper;
 		interface Neighborhood;
 		interface NeighborhoodFlag;
 	}
@@ -34,7 +34,7 @@ implementation
 
 	command error_t Send.send(message_t* msg)
 	{
-		call UniqueConfig.setSequenceNumber(msg, ++sequenceNumber);
+		call Ieee154PacketHelper.setDSN(msg, ++sequenceNumber);
 		return call SubSend.send(msg);
 	}
 
@@ -58,8 +58,8 @@ implementation
 
 	tasklet_async event message_t* SubReceive.receive(message_t* msg)
 	{
-		uint8_t idx = call Neighborhood.insertNode(call UniqueConfig.getSender(msg));
-		uint8_t dsn = call UniqueConfig.getSequenceNumber(msg);
+		uint8_t idx = call Neighborhood.insertNode(call Ieee154PacketHelper.getSrcAddr(msg));
+		uint8_t dsn = call Ieee154PacketHelper.getDSN(msg);
 
 		if( call NeighborhoodFlag.get(idx) )
 		{
@@ -67,7 +67,7 @@ implementation
 
 			if( diff == 0 )
 			{
-				call UniqueConfig.reportChannelError();
+				//call UniqueConfig.reportChannelError();
 				return msg;
 			}
 		}

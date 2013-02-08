@@ -8,9 +8,7 @@ module CC2420XRadioP
 	{
 		interface CC2420XDriverConfig;
 		interface SoftwareAckConfig;
-		interface UniqueConfig;
 		interface DummyConfig;
-		interface LowPowerListeningConfig;
 		interface RandomCollisionConfig;
 	}
 
@@ -90,27 +88,6 @@ implementation
 #ifdef TRAFFIC_MONITOR
 //		signal TrafficMonitorConfig.channelError();
 #endif
-	}
-
-/*----------------- UniqueConfig -----------------*/
-
-	async command uint8_t UniqueConfig.getSequenceNumber(message_t* msg)
-	{
-		return call Ieee154PacketHelper.getDSN(msg);
-	}
-
-	async command void UniqueConfig.setSequenceNumber(message_t* msg, uint8_t dsn)
-	{
-		call Ieee154PacketHelper.setDSN(msg, dsn);
-	}
-
-	async command ieee154_addr_t UniqueConfig.getSender(message_t* msg)
-	{
-		return call Ieee154PacketHelper.getSrcAddr(msg);
-	}
-
-	tasklet_async command void UniqueConfig.reportChannelError()
-	{
 	}
 
 /*----------------- CsmaConfig -----------------*/
